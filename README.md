@@ -8,4 +8,4 @@ Farsi-speaking 3D robot pet for a 3-year-old. One web page (three.js), installab
 - **Voice:** set `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID`, run `node gen-audio.mjs`; files land in `audio/`. Until then Robo only moves his mouth (iPads have no Persian system voice).
 - **3D asset:** `blender/` scripts rebuild `robo.glb` + `face/` from the Robotz pack (see HANDOFF.md).
 - **Native later (Capacitor, not done yet):** `npm i @capacitor/core @capacitor/cli && npx cap init Robo ca.robo.app --web-dir . && npx cap add android` (iOS needs a Mac).
-- Offline: `sw.js` is network-first, so a push shows up on the next launch (within ~10 min, GitHub Pages' HTTP cache); the cache is only used without internet.
+- Offline: `sw.js` is network-first, and revalidates its own files on every load, so a push shows up on the next launch; the cache is only used without internet.
