@@ -39,7 +39,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { S0, step, FACES, FOOD, pick } from './game.js';
-import { robotVoice } from './voice.js';
 
 const PH = Object.fromEntries((await (await fetch('phrases.json')).json()).map(p => [p.id, p]));
 const DEBUG = location.search.includes('debug');
@@ -162,6 +161,11 @@ function stepBlanket(now) {
   blanket.scale.lerpVectors(blanketMove.s, blanketMove.to.s, e);
   if (u >= 1) blanketMove = null;
 }
+// cup for the Drink clip: follows the right hand, rim tilting toward the mouth; white milk cup or clear water glass
+const cup = new THREE.Mesh(new THREE.CylinderGeometry(.036, .03, .1, 20), new THREE.MeshStandardMaterial({ roughness: .3, transparent: true }));
+cup.visible = false; cup.castShadow = true; scene.add(cup);
+const CUPS = { milk: [0xffffff, 1], water: [0x9fd8ff, .55] };
+const setCup = kind => { cup.material.color.set(CUPS[kind][0]); cup.material.opacity = CUPS[kind][1]; };
 const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }];  // rocket and bottle sit behind the ball's fence
 let kickCool = 0;
 function stepBall(dt, now) {
@@ -189,7 +193,7 @@ const gltf = await new GLTFLoader().loadAsync('robo.glb');
 const robot = gltf.scene; scene.add(robot);
 robot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
 const bone = n => robot.getObjectByName(n);
-const head = bone('DEF-Head'), body = bone('DEF-Body');
+const head = bone('DEF-Head'), body = bone('DEF-Body'), handR = bone('DEF-handR');
 const mixer = new THREE.AnimationMixer(robot);
 const clips = Object.fromEntries(gltf.animations.map(c => [c.name, mixer.clipAction(c)]));
 let cur;
@@ -238,9 +242,9 @@ for (const [rad, h, color] of [[.09, .45, 0xff6a00], [.05, .3, 0xffe066]]) {
 const ac = new (window.AudioContext || window.webkitAudioContext)();
 const bufs = {}; let audioBusyUntil = 0;
 const loadBuf = async u => { const res = await fetch(u); if (!res.ok) throw res.status; return ac.decodeAudioData(await res.arrayBuffer()); };
-function playBuf(b, rate = 1, robot = false) {  // robot: voice.js vocoder, matching the parent's ElevenLabs "Robot" lines
+function playBuf(b, rate = 1) {
   const s = ac.createBufferSource(), dur = b.duration / rate; s.buffer = b; s.playbackRate.value = rate;
-  if (robot) robotVoice(ac, s, ac.destination, dur); else s.connect(ac.destination);
+  s.connect(ac.destination);
   s.start();
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + dur * 1000 + 400);
   return dur * 1000;
@@ -255,7 +259,7 @@ async function say(id) {
   const p = PH[id]; if (!p) return;
   stats.words[id] = (stats.words[id] || 0) + 1; save();
   if (bufs[id] === undefined) bufs[id] = await loadBuf(`audio/${id}.mp3`).catch(() => null);
-  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id], 1, true); return; }
+  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id]); return; }
   // ponytail: no ElevenLabs file yet -> device Persian voice if it has one, otherwise just the mouth moves
   if (faVoice) { const u = new SpeechSynthesisUtterance(p.fa); u.voice = faVoice; u.lang = faVoice.lang; speechSynthesis.speak(u); }
   talkUntil = performance.now() + 350 * p.fa.split(/\s+/).length + 300;
@@ -304,7 +308,7 @@ function zzz() {
   document.body.append(z); setTimeout(() => z.remove(), 2700);
 }
 const FX = {
-  fart, bubbles: blowBubbles,
+  fart, bubbles: blowBubbles, milk: () => setCup('milk'), water: () => setCup('water'),
   blanketOn() { moveBlanket(OVER, 700); clearTimeout(peekTimer); peekTimer = setTimeout(() => dispatch({ type: 'peek' }), 7000); },
   blanketOff() { clearTimeout(peekTimer); moveBlanket(FOLDED, 900); },
   music: () => music(true), musicOff: () => music(false),
@@ -418,7 +422,7 @@ function listen(now) {
 async function playBack() {
   const b = await ac.decodeAudioData(await new Blob(chunks, { type: recMime }).arrayBuffer()).catch(() => null);
   if (!b || b.duration < .3) return;
-  face = 'joy'; talkUntil = performance.now() + playBuf(b, 1.45, true);
+  face = 'joy'; talkUntil = performance.now() + playBuf(b, 1.45);
   stats.spoken++; save();
 }
 
@@ -441,13 +445,19 @@ function openParent() {
 // ---------- frame loop ----------
 const clock = new THREE.Clock(), lookQ = new THREE.Quaternion(), lookE = new THREE.Euler();
 playClip('Idle', true);
-r.setAnimationLoop(() => {
+const frame = () => {
   const dt = Math.min(clock.getDelta(), .1), now = performance.now();
   mixer.update(dt);
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
   stepBall(dt, now);
   stepBubbles(dt, now); stepBlanket(now);
+  cup.visible = cur?.getClip().name === 'Drink';
+  if (cup.visible) {  // same raise/hold/lower timing as the Blender clip
+    const u = cur.time / cur.getClip().duration, ease = x => (x = Math.min(Math.max(x, 0), 1), x * x * (3 - 2 * x));
+    const up = ease(u / .25) * (1 - ease((u - .8) / .2));
+    handR.getWorldPosition(cup.position); cup.position.y += .02; cup.rotation.set(-.7 * up, 0, 0);  // rim toward the mouth
+  }
   if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
   if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
@@ -472,10 +482,11 @@ r.setAnimationLoop(() => {
     else if (now - Math.max(lastUser, lastSilly) > boredAfter) { lastSilly = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
   }
   r.render(scene, cam);
-});
+};
+r.setAnimationLoop(frame);
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, ball, ballV, bubbles, cam, stepBall, blanket, stepBlanket, render: () => r.render(scene, cam), hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, ball, ballV, bubbles, cam, stepBall, blanket, stepBlanket, frame, cup, head, render: () => r.render(scene, cam), hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>

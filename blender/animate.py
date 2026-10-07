@@ -81,6 +81,12 @@ def sneeze(u):
 def eat(u):
     e = bump(u, 0, 1) ** .5
     return dict(rot=(10 * e, 0, 0), head=(10 * abs(S(u, 3)) * e, 0, 0), armL=(10, 40 * e), armR=(10, 40 * e), elbowL=70 * e, elbowR=70 * e)
+def drink(u):  # right hand (holding the cup in the web app) to the mouth, head back, three gulps
+    up = ease(u / .25) * (1 - ease((u - .8) / .2))
+    gulp = sin(2 * pi * 3 * max(u - .3, 0) / .5) * (.3 < u < .8)
+    return dict(armR=(DRINK['out'] * up, DRINK['fwd'] * up), elbowR=DRINK['elbow'] * up, swingR=DRINK['swing'] * up,
+                head=((-18 + 4 * gulp) * up, 0, 0), rot=(-5 * up, 0, 0), armL=(6 + 8 * up, 0))
+DRINK = dict(out=30, fwd=140, elbow=20, swing=-30)  # from blender/drink_check.py: hand ~5 cm in front of/below the mouth
 def dance_wiggle(u):
     s = S(u)
     return dict(rot=(0, 12 * s, 4 * S(u, 2)), loc=(.03 * s, 0, .02 * abs(s)), head=(0, -8 * s, 0),
@@ -108,7 +114,7 @@ CLIPS = {"Idle": (48, True, idle), "HeadPoke": (24, False, head_poke), "BellyPok
          "FallBack": (30, False, lambda u: fall(u, "back")), "GetUpBack": (30, False, lambda u: get_up(u, "back")),
          "FallFront": (30, False, lambda u: fall(u, "front")), "GetUpFront": (30, False, lambda u: get_up(u, "front")),
          "FallApart": (48, False, fall_apart), "Reassemble": (48, False, reassemble),
-         "Fart": (36, False, fart), "Sneeze": (36, False, sneeze), "Eat": (48, False, eat),
+         "Fart": (36, False, fart), "Sneeze": (36, False, sneeze), "Eat": (48, False, eat), "Drink": (56, False, drink),
          "DanceWiggle": (24, True, dance_wiggle), "DanceSpin": (36, False, dance_spin), "DanceJump": (24, True, dance_jump),
          "Sleep": (72, True, sleep), "Fly": (48, True, fly), "Wave": (48, False, wave), "ThumbsUp": (36, False, thumbs_up)}
 

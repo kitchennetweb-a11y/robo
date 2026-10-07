@@ -71,7 +71,8 @@ export function step(s, ev, now = Date.now()) {
       if (!free) return null;
       s.fed = s.fed.filter(t => now - t < 60000).concat(now); s.mode = 'react'; s.next = [];
       if (s.fed.length >= 3) { s.fed = []; s.next = [{ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }]; }
-      return { clip: 'Eat', face: 'heart', sfx: 'feed' };  // FOOD[].say is used when a food is tapped in the tray
+      const drink = ev.food === 'milk' || ev.food === 'water';  // drinks: cup to the mouth; fx picks the cup
+      return { clip: drink ? 'Drink' : 'Eat', face: 'heart', sfx: 'feed', fx: drink ? ev.food : undefined };  // FOOD[].say: tray tap
     }
     case 'headSwipe':
       if (s.mode !== 'idle') return null;
