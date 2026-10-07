@@ -1,0 +1,48 @@
+<!doctype html>
+<meta charset="utf-8"><title>Robo tests</title>
+<pre id="out" style="font:14px monospace"></pre>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import { S0, step, SAYS, REACT, FOOD, FALLS, DANCES, SILLY, FACES } from './game.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const lines = []; let fails = 0;
+const ok = (c, m) => { lines.push((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
+
+// phrases
+const ph = await (await fetch('phrases.json')).json(), ids = new Set(ph.map(p => p.id));
+ok(ids.size === ph.length, `phrase ids unique (${ph.length})`);
+ok(ph.every(p => p.id && p.fa && p.en && p.cat), 'every phrase has id/fa/en/cat');
+const refs = [...Object.values(SAYS).flat(), ...Object.values(REACT).flatMap(r => r.say), ...Object.values(FOOD).flatMap(f => f.say),
+  ...DANCES.map(d => d[1]), ...SILLY.flatMap(s => s.say)];
+const missing = refs.filter(r => !ids.has(r)); ok(!missing.length, 'every reaction says a known phrase ' + missing);
+
+// clips exist in robo.glb, faces exist in face/, sfx exist
+const anims = new Set((await new GLTFLoader().loadAsync('robo.glb')).animations.map(a => a.name));
+const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
+const noClip = clips.filter(c => !anims.has(c)); ok(!noClip.length, 'every clip is in robo.glb ' + noClip);
+const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A', 'mouth_O'))];
+const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
+ok(!noTex.length, 'every face texture exists ' + noTex);
+const faceRefs = [...Object.values(REACT), ...SILLY].map(r => r.face); ok(faceRefs.every(f => FACES[f]), 'every face name is defined');
+const sfx = ['hi', 'wake', 'dance', 'rocket', 'fly', 'bored', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
+const noSfx = (await Promise.all(sfx.map(async n => (await fetch(`sfx/${n}.mp3`, { method: 'HEAD' })).ok ? null : n))).filter(Boolean);
+ok(!noSfx.length, 'every sfx exists ' + noSfx);
+
+// state machine: everything comes back to idle
+const settle = s => { for (let i = 0; i < 10 && s.mode === 'react'; i++) step(s, { type: 'clipDone' }); return s.mode; };
+for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { type: 'tap', zone }, 0); ok(a?.clip === REACT[zone].clip && settle(s) === 'idle', `tap ${zone} -> ${a?.clip} -> idle`); }
+{ const s = S0(); let a; for (let i = 0; i < 4; i++) a = step(s, { type: 'tap', zone: 'head' }, i * 200);
+  ok(FALLS.some(f => f[0] === a?.clip), `4 quick taps -> ${a?.clip}`); const up = step(s, { type: 'clipDone' });
+  ok(FALLS.some(f => f[0] === a.clip && f[1] === up?.clip), `-> matching get-up ${up?.clip}`); ok(settle(s) === 'idle', '-> idle'); }
+{ const s = S0(); step(s, { type: 'tap', zone: 'head' }, 0); step(s, { type: 'tap', zone: 'head' }, 5000); ok(s.mode === 'react' && settle(s) === 'idle', 'slow taps do not fall'); }
+{ const s = S0(); step(s, { type: 'bed' }); ok(s.mode === 'sleep', 'bed -> sleep'); ok(step(s, { type: 'tap', zone: 'belly' })?.fx === 'day' && settle(s) === 'idle', 'tap wakes -> idle'); }
+{ const s = S0(); step(s, { type: 'speaker' }); ok(s.mode === 'dance', 'speaker -> dance'); ok(step(s, { type: 'danceStep' })?.loop, 'dance step loops');
+  ok(step(s, { type: 'tap', zone: 'head' }) === null, 'taps ignored while dancing'); ok(step(s, { type: 'speaker' })?.fx === 'musicOff' && s.mode === 'idle', 'speaker again -> idle'); }
+{ const s = S0(); step(s, { type: 'swipeUp' }); ok(s.mode === 'fly', 'swipe up -> fly'); step(s, { type: 'flyEnd' }); ok(s.mode === 'idle', 'fly end -> idle'); }
+{ const s = S0(); let last; for (const [i, f] of ['apple', 'milk', 'bread'].entries()) { step(s, { type: 'feed', food: f }, i * 1000); last = step(s, { type: 'clipDone' }); if (i < 2) settle(s); }
+  ok(last?.clip === 'Fart', '3 foods in a minute -> fart'); ok(settle(s) === 'idle', '-> idle'); }
+{ const s = S0(); ok(step(s, { type: 'bored' }) && settle(s) === 'idle', 'bored silly -> idle'); }
+{ const s = S0(); step(s, { type: 'greet' }); ok(settle(s) === 'idle', 'greet -> idle'); }
+
+lines.push(fails ? `\n${fails} FAILED` : '\nALL PASS'); out.textContent = lines.join('\n'); document.title = fails ? 'FAIL' : 'PASS';
+</script>

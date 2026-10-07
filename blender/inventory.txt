@@ -1,0 +1,404 @@
+COLL 10. Question Pose: objs=['NurbsCurve', 'NurbsCurve.001', 'NurbsCurve.002'] children=[]
+COLL 11.Heart Pose: objs=['Heart', 'Heart.001', 'Heart.002', 'Heart.003'] children=[]
+COLL 12. Cake Pose: objs=[] children=['Cake.001']
+COLL 13. Cushion Pose: objs=['Cushion_sofa3', 'Cushion_sofa text.001', 'Cushion_sofa text.002', 'Cushion_sofa text'] children=[]
+COLL 14. Flower Pose : objs=['Flower.001', 'Flower.002', 'Flower.003', 'Flower'] children=[]
+COLL 16. Coffee_cup Pose : objs=['Coffee.002', 'Coffee', 'Coffee.001'] children=[]
+COLL 17. Rainbow Pose: objs=['Rainbow'] children=[]
+COLL 19. Cloud Pose: objs=['Cloud', 'Cloud.001'] children=[]
+COLL 20. Sign pose : objs=['39 Sign (pose 39)'] children=[]
+COLL 6. Heart Break Pose: objs=['Cube.002', 'Heart.004', 'Tears'] children=[]
+COLL 7. Money Pose: objs=['money.001', 'money.002', 'money.003', 'money.004', 'money.007', 'money.008', 'money.009', 'money.010', 'money.011', 'money.012', 'money.013', 'money.014', 'money.015', 'money.005'] children=[]
+COLL 8. Bulb Pose: objs=['Under Bulb :)', 'Bulb', 'Outside bulb', 'Inside bulb'] children=[]
+COLL 9. Christmas Pose: objs=[] children=['Bag', 'Christmas Tree', 'Gift 1', 'Gift 2', 'Hat 1']
+COLL Arm: objs=['geo_arm_bot_0', 'geo_arm_bot_1', 'geo_arm_bot_2', 'geo_arm_bot_3', 'geo_arm_bot_4', 'geo_arm_bot_5'] children=[]
+COLL Bag: objs=['Bag.003', 'Bag.002', 'Bag.005', 'Bag.006', 'Bag.007', 'Bag.009', 'Bag.008', 'Bag.010', 'Bag.011', 'Bag.012', 'Bag.013', 'Bag.014', 'Bag', 'Bag.001', 'Bag.004'] children=[]
+COLL Body: objs=['geo_body_bot_0', 'geo_body_bot_1', 'geo_body_bot_2', 'geo_body_bot_3', 'geo_body_bot_4', 'geo_body_bot_5'] children=[]
+COLL Bot_Master: objs=['rig_bot'] children=['Deformer', 'WGTS_rig']
+COLL Cake.001: objs=['Cake.001', 'Cake.002', 'Cake.003', 'Cake.004', 'Cake'] children=[]
+COLL Camera: objs=['Camera.002'] children=[]
+COLL Christmas Tree: objs=['Christmas Tree.003', 'Christmas Tree.001', 'Christmas Tree.002', 'Christmas Tree'] children=[]
+COLL Deformer: objs=['geo_head_bot_2_deformer', 'geo_head_bot_4_deformer', 'geo_head_bot_5_deformer'] children=[]
+COLL Gift 1: objs=['Gift 1', 'Gift 1.001', 'Gift 1.002', 'Gift 1.003', 'Gift 1.004', 'Gift 1.005', 'Gift 1.006', 'Gift 1.007', 'Gift 1.008'] children=[]
+COLL Gift 2: objs=['Gift 2', 'Gift 2.001', 'Gift 2.002', 'Gift 2.006', 'Gift 2.009', 'Gift 2.023', 'Gift 2.024', 'Gift 2.026', 'Gift 2.027', 'Gift 2.005', 'Gift 2.003', 'Gift 2.007', 'Gift 2.004', 'Gift 2.010', 'Gift 2.008', 'Gift 2.025', 'Gift 2.011', 'Gift 2.012', 'Gift 2.014', 'Gift 2.013', 'Gift 2.015', 'Gift 2.016', 'Gift 2.017', 'Gift 2.018', 'Gift 2.019', 'Gift 2.020', 'Gift 2.021', 'Gift 2.022'] children=[]
+COLL Hat 1: objs=['Hat'] children=[]
+COLL Head: objs=['geo_head_bot_0', 'geo_head_bot_1', 'geo_head_bot_3', 'geo_head_bot_4', 'geo_head_bot_5', 'geo_head_bot_2'] children=[]
+COLL Lights Primary: objs=['Area', 'Area.001'] children=[]
+COLL Objects: objs=[] children=['6. Heart Break Pose', '7. Money Pose', '8. Bulb Pose', '9. Christmas Pose', '10. Question Pose', '11.Heart Pose', '12. Cake Pose', '13. Cushion Pose', '14. Flower Pose ', '16. Coffee_cup Pose ', '17. Rainbow Pose', '19. Cloud Pose', '20. Sign pose ']
+COLL WGTS_rig: objs=['WGT-rig_root', 'WGT-rig_Body', 'WGT-rig_Head', 'WGT-rig_Antenna', 'WGT-rig_Antenna.001', 'WGT-rig_Antenna.002', 'WGT-rig_Antenna.003', 'WGT-rig_upper_arm_parent.L', 'WGT-rig_upper_arm_fk.L', 'WGT-rig_forearm_fk.L', 'WGT-rig_hand_fk.L', 'WGT-rig_upper_arm_ik.L', 'WGT-rig_upper_arm_ik_target.L', 'WGT-rig_hand_ik.L', 'WGT-rig_VIS_upper_arm_ik_pole.L', 'WGT-rig_upper_arm_tweak.L', 'WGT-rig_upper_arm_tweak.L.001', 'WGT-rig_forearm_tweak.L', 'WGT-rig_forearm_tweak.L.001', 'WGT-rig_hand_tweak.L', 'WGT-rig_palm.L', 'WGT-rig_f_index.01.L', 'WGT-rig_f_index.02.L', 'WGT-rig_f_index.03.L', 'WGT-rig_f_index.01.L.001', 'WGT-rig_f_index.01_master.L', 'WGT-rig_thumb.01.L', 'WGT-rig_thumb.02.L', 'WGT-rig_thumb.03.L', 'WGT-rig_thumb.01.L.001', 'WGT-rig_thumb.01_master.L', 'WGT-rig_f_middle.01.L', 'WGT-rig_f_middle.02.L', 'WGT-rig_f_middle.03.L', 'WGT-rig_f_middle.01.L.001', 'WGT-rig_f_middle.01_master.L', 'WGT-rig_f_pinky.01.L', 'WGT-rig_f_pinky.02.L', 'WGT-rig_f_pinky.03.L', 'WGT-rig_f_pinky.01.L.001', 'WGT-rig_f_pinky.01_master.L', 'WGT-rig_upper_arm_parent.R', 'WGT-rig_upper_arm_fk.R', 'WGT-rig_forearm_fk.R', 'WGT-rig_hand_fk.R', 'WGT-rig_upper_arm_ik.R', 'WGT-rig_upper_arm_ik_target.R', 'WGT-rig_hand_ik.R', 'WGT-rig_VIS_upper_arm_ik_pole.R', 'WGT-rig_upper_arm_tweak.R', 'WGT-rig_upper_arm_tweak.R.001', 'WGT-rig_forearm_tweak.R', 'WGT-rig_forearm_tweak.R.001', 'WGT-rig_hand_tweak.R', 'WGT-rig_palm.R', 'WGT-rig_f_index.01.R', 'WGT-rig_f_index.02.R', 'WGT-rig_f_index.03.R', 'WGT-rig_f_index.01.R.001', 'WGT-rig_f_index.01_master.R', 'WGT-rig_thumb.01.R', 'WGT-rig_thumb.02.R', 'WGT-rig_thumb.03.R', 'WGT-rig_thumb.01.R.001', 'WGT-rig_thumb.01_master.R', 'WGT-rig_f_middle.01.R', 'WGT-rig_f_middle.02.R', 'WGT-rig_f_middle.03.R', 'WGT-rig_f_middle.01.R.001', 'WGT-rig_f_middle.01_master.R', 'WGT-rig_f_pinky.01.R', 'WGT-rig_f_pinky.02.R', 'WGT-rig_f_pinky.03.R', 'WGT-rig_f_pinky.01.R.001', 'WGT-rig_f_pinky.01_master.R', 'WGT-rig_Eye', 'WGT-Eyes_panel', 'WGT-Eyes_slider', 'WGT-Mouth_panel'] children=[]
+OBJ 39 Sign (pose 39) [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.622, 0.031, 0.419) hide=True colls=['20. Sign pose '] verts=16 tris=28 mats=['Sign outer', 'Sign Inner']
+OBJ Area [LIGHT] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.0, 0.0, 0.0) hide=False colls=['Lights Primary']
+OBJ Area.001 [LIGHT] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.0, 0.0, 0.0) hide=False colls=['Lights Primary']
+OBJ Bag [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.924, 3.083, 3.922) hide=True colls=['Bag'] verts=28 tris=50 mats=['Mat_green'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Bag.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.003 [CURVE] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(3.46, 3.823, 2.985) hide=True colls=['Bag']
+OBJ Bag.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.468, 1.976, 0.944) hide=True colls=['Bag'] verts=1012 tris=2020 mats=['Mat_red'] mods=[('SUBSURF', None), ('NODES', None)]
+OBJ Bag.005 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.006 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.007 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.008 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.009 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.010 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.011 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.012 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.013 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=96 tris=188 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bag.014 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.311) hide=True colls=['Bag'] verts=112 tris=220 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Bulb [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.127, 2.127, 2.567) hide=True colls=['8. Bulb Pose'] verts=121 tris=224 mats=['Bulb'] mods=[('SUBSURF', None)]
+OBJ Cake.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.193, 2.013, 0.471) hide=True colls=['Cake.001'] verts=144 tris=284 mats=['Cake'] mods=[('SUBSURF', None)]
+OBJ Cake.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.325, 2.11, 0.39) hide=True colls=['Cake.001'] verts=283 tris=486 mats=['Cake Jelly'] mods=[('SHRINKWRAP', None), ('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Cake.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.193, 2.013, 0.471) hide=True colls=['Cake.001'] verts=144 tris=284 mats=['Cake'] mods=[('SUBSURF', None)]
+OBJ Cake.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.182, 1.937, 0.39) hide=True colls=['Cake.001'] verts=283 tris=486 mats=['Cake JJelly'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Camera.002 [CAMERA] parent=None pbone= loc=(0.034, -5.169, 0.546) dims=(0.0, 0.0, 0.0) hide=False colls=['Camera']
+OBJ Christmas Tree [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.789, 1.701, 2.0) hide=True colls=['Christmas Tree'] verts=12 tris=20 mats=['Mat_red'] mods=[('SUBSURF', None)]
+OBJ Christmas Tree.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(21.13, 21.269, 25.575) hide=True colls=['Christmas Tree'] verts=608 tris=1204 mats=['Mat_green'] mods=[('SUBSURF', None)]
+OBJ Christmas Tree.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(21.13, 21.269, 20.255) hide=True colls=['Christmas Tree'] verts=288 tris=384 mats=['Chstitmas head base'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Christmas Tree.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.879, 0.879, 8.501) hide=True colls=['Christmas Tree'] verts=160 tris=316 mats=['Gift and Trunk']
+OBJ Cloud.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(9.421, 6.91, 7.846) hide=True colls=['19. Cloud Pose'] verts=210 tris=400 mats=['Drops'] mods=[('SUBSURF', None)]
+OBJ Coffee.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.008, 0.001, 0.046) hide=True colls=['16. Coffee_cup Pose '] verts=33 tris=56 mats=['Spoon'] mods=[('SUBSURF', None)]
+OBJ Coffee.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.933, 1.563, 1.267) hide=True colls=['16. Coffee_cup Pose '] verts=4466 tris=8904 mats=['Mug']
+OBJ Cube.002 [MESH] parent=Heart.004 pbone= loc=(0.0, 0.0, 0.0) dims=(0.114, 0.214, 0.329) hide=True colls=['6. Heart Break Pose'] verts=28 tris=52 mats=[]
+OBJ Cake [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.126, 0.409, 0.366) hide=True colls=['Cake.001'] verts=504 tris=918 mats=['Lollypop upper', 'Lollypop base'] mods=[('MIRROR', None), ('SUBSURF', None)]
+OBJ Cushion_sofa text.001 [FONT] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.394, 0.449, 0.0) hide=True colls=['13. Cushion Pose']
+OBJ Cushion_sofa text.002 [FONT] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.394, 0.449, 0.0) hide=True colls=['13. Cushion Pose']
+OBJ Cushion_sofa3 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.075, 1.01, 1.05) hide=True colls=['13. Cushion Pose'] verts=194 tris=384 mats=['Cushion'] mods=[('SUBSURF', None)]
+OBJ Coffee [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.545, 1.545, 0.205) hide=True colls=['16. Coffee_cup Pose '] verts=63 tris=112 mats=['Coffee'] mods=[('SUBSURF', None)]
+OBJ Flower.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.11, 0.12, 0.364) hide=True colls=['14. Flower Pose '] verts=36 tris=66 mats=['Stem'] mods=[('SUBSURF', None)]
+OBJ Flower.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.455, 0.461, 0.175) hide=True colls=['14. Flower Pose '] verts=273 tris=294 mats=['Rose '] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Flower.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.12, 0.089, 0.073) hide=True colls=['14. Flower Pose '] verts=13 tris=14 mats=['Stem'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ geo_arm_bot_0 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.427, 0.096, 0.306) hide=True colls=['Arm'] verts=1072 tris=2112 mats=['mat_bot', 'mat_bot_mouth', 'mat_bot_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_arm_bot_1 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.501, 0.087, 0.263) hide=False colls=['Arm'] verts=1112 tris=2192 mats=['mat_bot_1', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_arm_bot_2 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.409, 0.096, 0.316) hide=True colls=['Arm'] verts=5782 tris=11496 mats=['mat_bot_2', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_arm_bot_3 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.409, 0.096, 0.295) hide=True colls=['Arm'] verts=3146 tris=6128 mats=['mat_bot_3', 'mat_bot_1_eye', 'mat_bot_mouth'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_arm_bot_4 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.399, 0.086, 0.313) hide=True colls=['Arm'] verts=25062 tris=48736 mats=['mat_bot_4', 'mat_bot_mouth'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_arm_bot_5 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.399, 0.086, 0.306) hide=True colls=['Arm'] verts=23076 tris=44832 mats=['mat_bot_5', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_body_bot_0 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.256, 0.256, 0.34) hide=True colls=['Body'] verts=350 tris=680 mats=['mat_bot', 'mat_bot_mouth', 'mat_bot_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_body_bot_1 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.297, 0.271, 0.356) hide=False colls=['Body'] verts=656 tris=1300 mats=['mat_bot_1', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_body_bot_2 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.284, 0.284, 0.36) hide=True colls=['Body'] verts=1362 tris=2720 mats=['mat_bot_2', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_body_bot_3 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.294, 0.206, 0.353) hide=True colls=['Body'] verts=1245 tris=2456 mats=['mat_bot_3', 'mat_bot_1_eye', 'mat_bot_mouth'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_body_bot_4 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.291, 0.317, 0.384) hide=True colls=['Body'] verts=2091 tris=4128 mats=['mat_bot_4', 'mat_bot_mouth'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_body_bot_5 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.268, 0.268, 0.355) hide=True colls=['Body'] verts=3398 tris=6776 mats=['mat_bot_5', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_head_bot_0 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.669, 0.536, 0.952) hide=True colls=['Head'] verts=1201 tris=2320 mats=['mat_bot', 'mat_bot_mouth', 'mat_bot_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None), ('MASK', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_head_bot_1 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.582, 0.207, 0.321) hide=True colls=['Head'] verts=941 tris=1808 mats=['mat_bot_1', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None), ('MASK', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001', 'DEF-hand.L']
+OBJ geo_head_bot_2 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.533, 0.494, 0.296) hide=True colls=['Head'] verts=1602 tris=3072 mats=['mat_bot_2', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SHRINKWRAP', None), ('SUBSURF', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_head_bot_2_deformer [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.344, 0.169, 0.167) hide=True colls=['Deformer'] verts=238 tris=472 mats=[] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_head_bot_3 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.506, 0.277, 0.547) hide=True colls=['Head'] verts=3021 tris=5936 mats=['mat_bot_3', 'mat_bot_1_eye', 'mat_bot_mouth'] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None), ('MASK', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L', 'DEF-forearm.L.001']
+OBJ geo_head_bot_4 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.452, 0.426, 0.519) hide=True colls=['Head'] verts=4131 tris=8096 mats=['mat_bot_4', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SHRINKWRAP', None), ('SUBSURF', None), ('MASK', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_head_bot_4_deformer [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.291, 0.164, 0.397) hide=True colls=['Deformer'] verts=750 tris=1496 mats=[] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_head_bot_5 [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.537, 0.479, 0.494) hide=True colls=['Head'] verts=1335 tris=2560 mats=['mat_bot_5', 'mat_bot_mouth', 'mat_bot_1_eye'] mods=[('ARMATURE', 'rig_bot'), ('SHRINKWRAP', None), ('SUBSURF', None), ('MASK', None), ('MASK', None), ('MASK', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ geo_head_bot_5_deformer [MESH] parent=rig_bot pbone= loc=(0.0, 0.0, 0.0) dims=(0.331, 0.091, 0.331) hide=True colls=['Deformer'] verts=113 tris=192 mats=[] mods=[('ARMATURE', 'rig_bot'), ('SUBSURF', None)] vgroups=['mask_screen', 'DEF-Antenna.003', 'DEF-Antenna.002', 'DEF-Antenna.001', 'DEF-Antenna', 'DEF-Head', 'Eye', 'DEF-Eye', 'DEF-Body', 'DEF-upper_arm.L', 'DEF-upper_arm.L.001', 'DEF-forearm.L']
+OBJ Gift 1 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.43, 2.02, 2.017) hide=True colls=['Gift 1'] verts=140 tris=280 mats=['Mat_red']
+OBJ Gift 1.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.518, 2.186, 0.612) hide=True colls=['Gift 1'] verts=280 tris=560 mats=['Mat_red']
+OBJ Gift 1.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.43, 2.02, 2.017) hide=True colls=['Gift 1'] verts=140 tris=280 mats=['Mat_red']
+OBJ Gift 1.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.518, 2.186, 0.612) hide=True colls=['Gift 1'] verts=280 tris=560 mats=['Mat_red']
+OBJ Gift 1.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 1'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None), ('MIRROR', None)]
+OBJ Gift 1.005 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.447, 0.451, 0.331) hide=True colls=['Gift 1'] verts=18 tris=16 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 1.006 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(3.597, 5.357, 0.065) hide=True colls=['Gift 1'] verts=35 tris=48 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None), ('MIRROR', None)]
+OBJ Gift 1.007 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.0) hide=True colls=['Gift 1'] verts=84 tris=164 mats=['Gift and Trunk']
+OBJ Gift 1.008 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.167, 2.167, 0.592) hide=True colls=['Gift 1'] verts=184 tris=364 mats=['Gift and Trunk']
+OBJ Gift 2 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.43, 2.02, 2.017) hide=True colls=['Gift 2'] verts=140 tris=280 mats=['Mat_red']
+OBJ Gift 2.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.518, 2.186, 0.612) hide=True colls=['Gift 2'] verts=280 tris=560 mats=['Mat_red']
+OBJ Gift 2.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.43, 2.02, 2.017) hide=True colls=['Gift 2'] verts=140 tris=280 mats=['Mat_red']
+OBJ Gift 2.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.11, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.005 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None), ('MIRROR', None)]
+OBJ Gift 2.006 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.518, 2.186, 0.612) hide=True colls=['Gift 2'] verts=280 tris=560 mats=['Mat_red']
+OBJ Gift 2.007 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.632, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.008 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.072, 0.624, 0.61) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.009 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None), ('MIRROR', None)]
+OBJ Gift 2.010 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.011 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.012 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.013 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.014 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.613, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.015 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.264, 0.641, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.016 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.264, 0.641, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.017 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.264, 0.641, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.018 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.264, 0.641, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.019 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.11, 0.626, 0.538) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.020 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.101, 0.66, 0.538) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.021 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.64, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.022 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.126, 0.64, 0.669) hide=True colls=['Gift 2'] verts=20 tris=18 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.023 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.447, 0.451, 0.331) hide=True colls=['Gift 2'] verts=18 tris=16 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.024 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(3.597, 5.357, 0.065) hide=True colls=['Gift 2'] verts=35 tris=48 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.025 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(3.597, 5.357, 0.065) hide=True colls=['Gift 2'] verts=35 tris=48 mats=['Mat_red'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Gift 2.026 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 2.0, 2.0) hide=True colls=['Gift 2'] verts=84 tris=164 mats=['Gift and Trunk']
+OBJ Gift 2.027 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.167, 2.167, 0.592) hide=True colls=['Gift 2'] verts=184 tris=364 mats=['Gift and Trunk']
+OBJ Hat [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(9.751, 8.061, 7.586) hide=True colls=['Hat 1'] verts=946 tris=1884 mats=['Chstitmas head', 'Mat_red', 'Chstitmas head base'] mods=[('SUBSURF', None)]
+OBJ Heart [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.353, 0.189, 0.312) hide=True colls=['11.Heart Pose'] verts=434 tris=864 mats=['Heart']
+OBJ Heart.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.353, 0.189, 0.312) hide=True colls=['11.Heart Pose'] verts=434 tris=864 mats=['Heart']
+OBJ Heart.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.353, 0.189, 0.312) hide=True colls=['11.Heart Pose'] verts=434 tris=864 mats=['Heart']
+OBJ Heart.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.353, 0.189, 0.312) hide=True colls=['11.Heart Pose'] verts=434 tris=864 mats=['Heart']
+OBJ Heart.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.353, 0.189, 0.312) hide=True colls=['6. Heart Break Pose'] verts=434 tris=864 mats=['Heart'] mods=[('SUBSURF', None), ('BOOLEAN', 'Cube.002')]
+OBJ Inside bulb [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(5.647, 2.5, 3.237) hide=True colls=['8. Bulb Pose'] verts=637 tris=1260 mats=['Inside Bulb']
+OBJ Cloud [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(3.798, 2.288, 2.406) hide=True colls=['19. Cloud Pose'] verts=12880 tris=25756 mats=['Cloud']
+OBJ money.001 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.002 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.003 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.004 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.005 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.007 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.021, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.008 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.009 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.010 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.011 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.012 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.013 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.014 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ money.015 [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.117, 0.002, 0.175) hide=True colls=['7. Money Pose'] verts=94 tris=184 mats=['Money innder', 'Money outer', 'Money sign'] mods=[('SUBSURF', None)]
+OBJ NurbsCurve [MESH] parent=None pbone= loc=(-0.347, -0.0, 0.926) dims=(0.156, 0.229, 0.018) hide=False colls=['10. Question Pose'] verts=34 tris=30 mats=['Question mark'] mods=[('SOLIDIFY', None), ('BEVEL', None), ('SUBSURF', None), ('NODES', None)]
+OBJ NurbsCurve.001 [MESH] parent=None pbone= loc=(-0.369, -0.0, 0.801) dims=(0.084, 0.123, 0.01) hide=False colls=['10. Question Pose'] verts=34 tris=30 mats=['Question mark'] mods=[('SOLIDIFY', None), ('BEVEL', None), ('SUBSURF', None), ('NODES', None)]
+OBJ NurbsCurve.002 [MESH] parent=None pbone= loc=(-0.245, -0.0, 0.908) dims=(0.084, 0.123, 0.01) hide=False colls=['10. Question Pose'] verts=34 tris=30 mats=['Question mark'] mods=[('SOLIDIFY', None), ('BEVEL', None), ('SUBSURF', None), ('NODES', None)]
+OBJ Outside bulb [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(21.483, 8.949, 1.958) hide=True colls=['8. Bulb Pose'] verts=40 tris=60 mats=['Bulb'] mods=[('SUBSURF', None)]
+OBJ Flower [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.078, 0.058, 0.047) hide=True colls=['14. Flower Pose '] verts=13 tris=14 mats=['Stem'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ Rainbow [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.0, 4.092, 1.408) hide=True colls=['17. Rainbow Pose'] verts=18 tris=20 mats=['Rainbow'] mods=[('SOLIDIFY', None), ('SUBSURF', None)]
+OBJ rig_bot [ARMATURE] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.463, 0.956, 1.264) hide=False colls=['Bot_Master'] bones=[('root', None), ('ORG-Body', 'root'), ('ORG-upper_arm.L', 'ORG-Body'), ('ORG-forearm.L', 'ORG-upper_arm.L'), ('ORG-hand.L', 'ORG-forearm.L'), ('MCH-hand_tweak.L', 'ORG-hand.L'), ('hand_tweak.L', 'MCH-hand_tweak.L'), ('MCH-forearm_tweak.L', 'ORG-forearm.L'), ('forearm_tweak.L', 'MCH-forearm_tweak.L'), ('MCH-forearm_tweak.L.001', 'ORG-forearm.L'), ('forearm_tweak.L.001', 'MCH-forearm_tweak.L.001'), ('MCH-upper_arm_tweak.L.001', 'ORG-upper_arm.L'), ('upper_arm_tweak.L.001', 'MCH-upper_arm_tweak.L.001'), ('ORG-upper_arm.R', 'ORG-Body'), ('ORG-forearm.R', 'ORG-upper_arm.R'), ('ORG-hand.R', 'ORG-forearm.R'), ('MCH-hand_tweak.R', 'ORG-hand.R'), ('hand_tweak.R', 'MCH-hand_tweak.R'), ('MCH-forearm_tweak.R', 'ORG-forearm.R'), ('forearm_tweak.R', 'MCH-forearm_tweak.R'), ('MCH-forearm_tweak.R.001', 'ORG-forearm.R'), ('forearm_tweak.R.001', 'MCH-forearm_tweak.R.001'), ('MCH-upper_arm_tweak.R.001', 'ORG-upper_arm.R'), ('upper_arm_tweak.R.001', 'MCH-upper_arm_tweak.R.001'), ('ORG-Head', 'ORG-Body'), ('ORG-Antenna', 'ORG-Head'), ('ORG-Antenna.001', 'ORG-Antenna'), ('ORG-Antenna.002', 'ORG-Antenna.001'), ('ORG-Antenna.003', 'ORG-Antenna.002'), ('DEF-Antenna.003', 'ORG-Antenna.003'), ('Antenna.003', 'ORG-Antenna.002'), ('DEF-Antenna.002', 'ORG-Antenna.002'), ('Antenna.002', 'ORG-Antenna.001'), ('DEF-Antenna.001', 'ORG-Antenna.001'), ('Antenna.001', 'ORG-Antenna'), ('DEF-Antenna', 'ORG-Antenna'), ('Antenna', 'ORG-Head'), ('DEF-Head', 'ORG-Head'), ('DEF-Eye_5', 'DEF-Head'), ('DEF-Eye_4', 'DEF-Head'), ('DEF-Eye_2', 'DEF-Head'), ('Eye_Master', 'DEF-Head'), ('eye_5', 'Eye_Master'), ('eye_2', 'Eye_Master'), ('DEF-Eye', 'Eye_Master'), ('Eye', 'DEF-Head'), ('eye_4', 'Eye'), ('Head', 'ORG-Body'), ('DEF-Body', 'ORG-Body'), ('MCH-upper_arm_parent.L', 'ORG-Body'), ('MCH-upper_arm_parent_socket.L', 'MCH-upper_arm_parent.L'), ('upper_arm_parent.L', 'MCH-upper_arm_parent_socket.L'), ('upper_arm_fk.L', 'MCH-upper_arm_parent.L'), ('forearm_fk.L', 'upper_arm_fk.L'), ('MCH-hand_fk.L', 'forearm_fk.L'), ('hand_fk.L', 'MCH-hand_fk.L'), ('upper_arm_ik.L', 'MCH-upper_arm_parent.L'), ('MCH-forearm_ik.L', 'upper_arm_ik.L'), ('MCH-upper_arm_ik_stretch.L', 'MCH-upper_arm_parent.L'), ('MCH-upper_arm_tweak.L', 'ORG-Body'), ('upper_arm_tweak.L', 'MCH-upper_arm_tweak.L'), ('DEF-upper_arm.L', 'ORG-Body'), ('DEF-upper_arm.L.001', 'DEF-upper_arm.L'), ('DEF-forearm.L', 'DEF-upper_arm.L.001'), ('DEF-forearm.L.001', 'DEF-forearm.L'), ('DEF-hand.L', 'DEF-forearm.L.001'), ('ORG-palm.01.L', 'DEF-hand.L'), ('ORG-f_index.01.L', 'ORG-palm.01.L'), ('ORG-f_index.02.L', 'ORG-f_index.01.L'), ('ORG-f_index.03.L', 'ORG-f_index.02.L'), ('ORG-thumb.01.L', 'ORG-palm.01.L'), ('ORG-thumb.02.L', 'ORG-thumb.01.L'), ('ORG-thumb.03.L', 'ORG-thumb.02.L'), ('DEF-f_index.01.L', 'ORG-palm.01.L'), ('DEF-f_index.02.L', 'DEF-f_index.01.L'), ('DEF-f_index.03.L', 'DEF-f_index.02.L'), ('f_index.01_master.L', 'ORG-palm.01.L'), ('DEF-thumb.01.L', 'ORG-palm.01.L'), ('DEF-thumb.02.L', 'DEF-thumb.01.L'), ('DEF-thumb.03.L', 'DEF-thumb.02.L'), ('thumb.01_master.L', 'ORG-palm.01.L'), ('DEF-palm.01.L', 'ORG-palm.01.L'), ('MCH-f_index.01_drv.L', 'ORG-palm.01.L'), ('f_index.01.L', 'MCH-f_index.01_drv.L'), ('MCH-f_index.02_drv.L', 'f_index.01.L'), ('f_index.02.L', 'MCH-f_index.02_drv.L'), ('MCH-f_index.03_drv.L', 'f_index.02.L'), ('f_index.03.L', 'MCH-f_index.03_drv.L'), ('f_index.01.L.001', 'f_index.03.L'), ('MCH-f_index.03.L', 'f_index.03.L'), ('MCH-f_index.02.L', 'f_index.02.L'), ('MCH-f_index.01.L', 'ORG-palm.01.L'), ('MCH-thumb.01_drv.L', 'ORG-palm.01.L'), ('thumb.01.L', 'MCH-thumb.01_drv.L'), ('MCH-thumb.02_drv.L', 'thumb.01.L'), ('thumb.02.L', 'MCH-thumb.02_drv.L'), ('MCH-thumb.03_drv.L', 'thumb.02.L'), ('thumb.03.L', 'MCH-thumb.03_drv.L'), ('thumb.01.L.001', 'thumb.03.L'), ('MCH-thumb.03.L', 'thumb.03.L'), ('MCH-thumb.02.L', 'thumb.02.L'), ('MCH-thumb.01.L', 'ORG-palm.01.L'), ('ORG-palm.02.L', 'DEF-hand.L'), ('ORG-f_middle.01.L', 'ORG-palm.02.L'), ('ORG-f_middle.02.L', 'ORG-f_middle.01.L'), ('ORG-f_middle.03.L', 'ORG-f_middle.02.L'), ('DEF-f_middle.01.L', 'ORG-palm.02.L'), ('DEF-f_middle.02.L', 'DEF-f_middle.01.L'), ('DEF-f_middle.03.L', 'DEF-f_middle.02.L'), ('f_middle.01_master.L', 'ORG-palm.02.L'), ('DEF-palm.02.L', 'ORG-palm.02.L'), ('MCH-f_middle.01_drv.L', 'ORG-palm.02.L'), ('f_middle.01.L', 'MCH-f_middle.01_drv.L'), ('MCH-f_middle.02_drv.L', 'f_middle.01.L'), ('f_middle.02.L', 'MCH-f_middle.02_drv.L'), ('MCH-f_middle.03_drv.L', 'f_middle.02.L'), ('f_middle.03.L', 'MCH-f_middle.03_drv.L'), ('f_middle.01.L.001', 'f_middle.03.L'), ('MCH-f_middle.03.L', 'f_middle.03.L'), ('MCH-f_middle.02.L', 'f_middle.02.L'), ('MCH-f_middle.01.L', 'ORG-palm.02.L'), ('ORG-palm.04.L', 'DEF-hand.L'), ('ORG-f_pinky.01.L', 'ORG-palm.04.L'), ('ORG-f_pinky.02.L', 'ORG-f_pinky.01.L'), ('ORG-f_pinky.03.L', 'ORG-f_pinky.02.L'), ('DEF-f_pinky.01.L', 'ORG-palm.04.L'), ('DEF-f_pinky.02.L', 'DEF-f_pinky.01.L'), ('DEF-f_pinky.03.L', 'DEF-f_pinky.02.L'), ('f_pinky.01_master.L', 'ORG-palm.04.L'), ('DEF-palm.04.L', 'ORG-palm.04.L'), ('MCH-f_pinky.01_drv.L', 'ORG-palm.04.L'), ('f_pinky.01.L', 'MCH-f_pinky.01_drv.L'), ('MCH-f_pinky.02_drv.L', 'f_pinky.01.L'), ('f_pinky.02.L', 'MCH-f_pinky.02_drv.L'), ('MCH-f_pinky.03_drv.L', 'f_pinky.02.L'), ('f_pinky.03.L', 'MCH-f_pinky.03_drv.L'), ('f_pinky.01.L.001', 'f_pinky.03.L'), ('MCH-f_pinky.03.L', 'f_pinky.03.L'), ('MCH-f_pinky.02.L', 'f_pinky.02.L'), ('MCH-f_pinky.01.L', 'ORG-palm.04.L'), ('palm.L', 'DEF-hand.L'), ('MCH-upper_arm_parent.R', 'ORG-Body'), ('MCH-upper_arm_parent_socket.R', 'MCH-upper_arm_parent.R'), ('upper_arm_parent.R', 'MCH-upper_arm_parent_socket.R'), ('upper_arm_fk.R', 'MCH-upper_arm_parent.R'), ('forearm_fk.R', 'upper_arm_fk.R'), ('MCH-hand_fk.R', 'forearm_fk.R'), ('hand_fk.R', 'MCH-hand_fk.R'), ('upper_arm_ik.R', 'MCH-upper_arm_parent.R'), ('MCH-forearm_ik.R', 'upper_arm_ik.R'), ('MCH-upper_arm_ik_stretch.R', 'MCH-upper_arm_parent.R'), ('MCH-upper_arm_tweak.R', 'ORG-Body'), ('upper_arm_tweak.R', 'MCH-upper_arm_tweak.R'), ('DEF-upper_arm.R', 'ORG-Body'), ('DEF-upper_arm.R.001', 'DEF-upper_arm.R'), ('DEF-forearm.R', 'DEF-upper_arm.R.001'), ('DEF-forearm.R.001', 'DEF-forearm.R'), ('DEF-hand.R', 'DEF-forearm.R.001'), ('ORG-palm.01.R', 'DEF-hand.R'), ('ORG-f_index.01.R', 'ORG-palm.01.R'), ('ORG-f_index.02.R', 'ORG-f_index.01.R'), ('ORG-f_index.03.R', 'ORG-f_index.02.R'), ('ORG-thumb.01.R', 'ORG-palm.01.R'), ('ORG-thumb.02.R', 'ORG-thumb.01.R'), ('ORG-thumb.03.R', 'ORG-thumb.02.R'), ('DEF-f_index.01.R', 'ORG-palm.01.R'), ('DEF-f_index.02.R', 'DEF-f_index.01.R'), ('DEF-f_index.03.R', 'DEF-f_index.02.R'), ('f_index.01_master.R', 'ORG-palm.01.R'), ('DEF-thumb.01.R', 'ORG-palm.01.R'), ('DEF-thumb.02.R', 'DEF-thumb.01.R'), ('DEF-thumb.03.R', 'DEF-thumb.02.R'), ('thumb.01_master.R', 'ORG-palm.01.R'), ('DEF-palm.01.R', 'ORG-palm.01.R'), ('MCH-f_index.01_drv.R', 'ORG-palm.01.R'), ('f_index.01.R', 'MCH-f_index.01_drv.R'), ('MCH-f_index.02_drv.R', 'f_index.01.R'), ('f_index.02.R', 'MCH-f_index.02_drv.R'), ('MCH-f_index.03_drv.R', 'f_index.02.R'), ('f_index.03.R', 'MCH-f_index.03_drv.R'), ('f_index.01.R.001', 'f_index.03.R'), ('MCH-f_index.03.R', 'f_index.03.R'), ('MCH-f_index.02.R', 'f_index.02.R'), ('MCH-f_index.01.R', 'ORG-palm.01.R'), ('MCH-thumb.01_drv.R', 'ORG-palm.01.R'), ('thumb.01.R', 'MCH-thumb.01_drv.R'), ('MCH-thumb.02_drv.R', 'thumb.01.R'), ('thumb.02.R', 'MCH-thumb.02_drv.R'), ('MCH-thumb.03_drv.R', 'thumb.02.R'), ('thumb.03.R', 'MCH-thumb.03_drv.R'), ('thumb.01.R.001', 'thumb.03.R'), ('MCH-thumb.03.R', 'thumb.03.R'), ('MCH-thumb.02.R', 'thumb.02.R'), ('MCH-thumb.01.R', 'ORG-palm.01.R'), ('ORG-palm.02.R', 'DEF-hand.R'), ('ORG-f_middle.01.R', 'ORG-palm.02.R'), ('ORG-f_middle.02.R', 'ORG-f_middle.01.R'), ('ORG-f_middle.03.R', 'ORG-f_middle.02.R'), ('DEF-f_middle.01.R', 'ORG-palm.02.R'), ('DEF-f_middle.02.R', 'DEF-f_middle.01.R'), ('DEF-f_middle.03.R', 'DEF-f_middle.02.R'), ('f_middle.01_master.R', 'ORG-palm.02.R'), ('DEF-palm.02.R', 'ORG-palm.02.R'), ('MCH-f_middle.01_drv.R', 'ORG-palm.02.R'), ('f_middle.01.R', 'MCH-f_middle.01_drv.R'), ('MCH-f_middle.02_drv.R', 'f_middle.01.R'), ('f_middle.02.R', 'MCH-f_middle.02_drv.R'), ('MCH-f_middle.03_drv.R', 'f_middle.02.R'), ('f_middle.03.R', 'MCH-f_middle.03_drv.R'), ('f_middle.01.R.001', 'f_middle.03.R'), ('MCH-f_middle.03.R', 'f_middle.03.R'), ('MCH-f_middle.02.R', 'f_middle.02.R'), ('MCH-f_middle.01.R', 'ORG-palm.02.R'), ('ORG-palm.04.R', 'DEF-hand.R'), ('ORG-f_pinky.01.R', 'ORG-palm.04.R'), ('ORG-f_pinky.02.R', 'ORG-f_pinky.01.R'), ('ORG-f_pinky.03.R', 'ORG-f_pinky.02.R'), ('DEF-f_pinky.01.R', 'ORG-palm.04.R'), ('DEF-f_pinky.02.R', 'DEF-f_pinky.01.R'), ('DEF-f_pinky.03.R', 'DEF-f_pinky.02.R'), ('f_pinky.01_master.R', 'ORG-palm.04.R'), ('DEF-palm.04.R', 'ORG-palm.04.R'), ('MCH-f_pinky.01_drv.R', 'ORG-palm.04.R'), ('f_pinky.01.R', 'MCH-f_pinky.01_drv.R'), ('MCH-f_pinky.02_drv.R', 'f_pinky.01.R'), ('f_pinky.02.R', 'MCH-f_pinky.02_drv.R'), ('MCH-f_pinky.03_drv.R', 'f_pinky.02.R'), ('f_pinky.03.R', 'MCH-f_pinky.03_drv.R'), ('f_pinky.01.R.001', 'f_pinky.03.R'), ('MCH-f_pinky.03.R', 'f_pinky.03.R'), ('MCH-f_pinky.02.R', 'f_pinky.02.R'), ('MCH-f_pinky.01.R', 'ORG-palm.04.R'), ('palm.R', 'DEF-hand.R'), ('Body', 'root'), ('VIS_upper_arm_ik_pole.L', 'root'), ('VIS_upper_arm_ik_pole.R', 'root'), ('Eyes_panel', 'root'), ('Eyes_Blink', 'Eyes_panel'), ('Eyes_Wink.L', 'Eyes_panel'), ('Eyes_Wink.R', 'Eyes_panel'), ('Eyes_Happy', 'Eyes_panel'), ('Eyes_Sad', 'Eyes_panel'), ('Eyes_Angry', 'Eyes_panel'), ('Eyes_Joy', 'Eyes_panel'), ('Eyes_X', 'Eyes_panel'), ('Eyes_Heart', 'Eyes_panel'), ('Eyes_Money', 'Eyes_panel'), ('Eyes_Loading', 'Eyes_panel'), ('Eyes_Star', 'Eyes_panel'), ('Eyes_OnOff', 'Eyes_panel'), ('Mouth_panel', 'root'), ('Mouth_Smile', 'Mouth_panel'), ('Mouth_Smile.L', 'Mouth_panel'), ('Mouth_Smile.R', 'Mouth_panel'), ('Mouth_Happy', 'Mouth_panel'), ('Mouth_Sad', 'Mouth_panel'), ('Mouth_A', 'Mouth_panel'), ('Mouth_O', 'Mouth_panel'), ('Mouth_Flat', 'Mouth_panel'), ('Mouth_OnOff', 'Mouth_panel'), ('MCH-hand_ik.parent.L', None), ('hand_ik.L', 'MCH-hand_ik.parent.L'), ('MCH-upper_arm_ik_target.L', 'hand_ik.L'), ('MCH-upper_arm_ik_target.parent.L', None), ('upper_arm_ik_target.L', 'MCH-upper_arm_ik_target.parent.L'), ('MCH-hand_ik.parent.R', None), ('hand_ik.R', 'MCH-hand_ik.parent.R'), ('MCH-upper_arm_ik_target.R', 'hand_ik.R'), ('MCH-upper_arm_ik_target.parent.R', None), ('upper_arm_ik_target.R', 'MCH-upper_arm_ik_target.parent.R')]
+OBJ Tears [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(2.656, 0.895, 4.361) hide=True colls=['6. Heart Break Pose'] verts=126 tris=240 mats=['Drops'] mods=[('SUBSURF', None), ('MIRROR', None)]
+OBJ Cushion_sofa text [FONT] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.394, 0.449, 0.0) hide=True colls=['13. Cushion Pose']
+OBJ Under Bulb :) [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(1.171, 1.171, 0.959) hide=True colls=['8. Bulb Pose'] verts=624 tris=1222 mats=['Bulb steel', 'Bulb base'] mods=[('SUBSURF', None)]
+OBJ WGT-Eyes_panel [MESH] parent=None pbone= loc=(2.792, 0.158, 2.987) dims=(2.0, 3.281, 0.0) hide=True colls=['WGTS_rig'] verts=4309 tris=0 mats=[]
+OBJ WGT-Eyes_slider [MESH] parent=None pbone= loc=(2.792, 0.158, 2.987) dims=(1.119, 1.907, 0.0) hide=True colls=['WGTS_rig'] verts=4 tris=0 mats=[]
+OBJ WGT-Mouth_panel [MESH] parent=None pbone= loc=(4.958, 0.158, 2.987) dims=(2.0, 2.489, 0.0) hide=True colls=['WGTS_rig'] verts=3120 tris=0 mats=[]
+OBJ WGT-rig_Antenna [MESH] parent=None pbone= loc=(-0.076, -0.0, 1.242) dims=(0.066, 0.0, 0.066) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_Antenna.001 [MESH] parent=None pbone= loc=(-0.076, -0.0, 1.308) dims=(0.073, 0.0, 0.073) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_Antenna.002 [MESH] parent=None pbone= loc=(-0.076, -0.0, 1.382) dims=(0.073, 0.0, 0.073) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_Antenna.003 [MESH] parent=None pbone= loc=(-0.076, -0.0, 1.455) dims=(0.099, 0.0, 0.099) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_Body [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.348, 0.0, 0.348) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_Eye [MESH] parent=None pbone= loc=(-0.0, -0.815, 0.234) dims=(2.06, 0.0, 1.111) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.01.L [MESH] parent=None pbone= loc=(0.182, -0.017, 0.081) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.01.L.001 [MESH] parent=None pbone= loc=(0.177, -0.019, 0.048) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.01.R [MESH] parent=None pbone= loc=(-0.182, -0.017, 0.081) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.01.R.001 [MESH] parent=None pbone= loc=(-0.177, -0.019, 0.048) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.01_master.L [MESH] parent=None pbone= loc=(0.182, -0.017, 0.081) dims=(0.006, 0.063, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_index.01_master.R [MESH] parent=None pbone= loc=(-0.182, -0.017, 0.081) dims=(0.006, 0.063, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_index.02.L [MESH] parent=None pbone= loc=(0.181, -0.018, 0.065) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.02.R [MESH] parent=None pbone= loc=(-0.181, -0.018, 0.065) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.03.L [MESH] parent=None pbone= loc=(0.179, -0.019, 0.057) dims=(0.006, 0.0, 0.006) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_index.03.R [MESH] parent=None pbone= loc=(-0.179, -0.019, 0.057) dims=(0.006, 0.0, 0.006) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01.L [MESH] parent=None pbone= loc=(0.182, 0.001, 0.08) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01.L.001 [MESH] parent=None pbone= loc=(0.177, 0.006, 0.045) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01.R [MESH] parent=None pbone= loc=(-0.182, 0.001, 0.08) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01.R.001 [MESH] parent=None pbone= loc=(-0.177, 0.006, 0.045) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01_master.L [MESH] parent=None pbone= loc=(0.182, 0.001, 0.08) dims=(0.006, 0.066, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_middle.01_master.R [MESH] parent=None pbone= loc=(-0.182, 0.001, 0.08) dims=(0.006, 0.066, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_middle.02.L [MESH] parent=None pbone= loc=(0.181, 0.003, 0.065) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.02.R [MESH] parent=None pbone= loc=(-0.181, 0.003, 0.065) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.03.L [MESH] parent=None pbone= loc=(0.179, 0.005, 0.054) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_middle.03.R [MESH] parent=None pbone= loc=(-0.179, 0.005, 0.054) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01.L [MESH] parent=None pbone= loc=(0.182, 0.021, 0.083) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01.L.001 [MESH] parent=None pbone= loc=(0.178, 0.028, 0.052) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01.R [MESH] parent=None pbone= loc=(-0.182, 0.021, 0.083) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01.R.001 [MESH] parent=None pbone= loc=(-0.178, 0.028, 0.052) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01_master.L [MESH] parent=None pbone= loc=(0.182, 0.021, 0.083) dims=(0.005, 0.058, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.01_master.R [MESH] parent=None pbone= loc=(-0.182, 0.021, 0.083) dims=(0.005, 0.058, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.02.L [MESH] parent=None pbone= loc=(0.182, 0.024, 0.071) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.02.R [MESH] parent=None pbone= loc=(-0.182, 0.024, 0.071) dims=(0.007, 0.0, 0.007) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.03.L [MESH] parent=None pbone= loc=(0.18, 0.026, 0.06) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_f_pinky.03.R [MESH] parent=None pbone= loc=(-0.18, 0.026, 0.06) dims=(0.005, 0.0, 0.005) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_forearm_fk.L [MESH] parent=None pbone= loc=(0.176, 0.003, 0.224) dims=(0.048, 0.097, 0.048) hide=False colls=['WGTS_rig'] verts=34 tris=0 mats=[]
+OBJ WGT-rig_forearm_fk.R [MESH] parent=None pbone= loc=(-0.176, 0.003, 0.224) dims=(0.048, 0.097, 0.048) hide=False colls=['WGTS_rig'] verts=34 tris=0 mats=[]
+OBJ WGT-rig_forearm_tweak.L [MESH] parent=None pbone= loc=(0.176, 0.003, 0.224) dims=(0.024, 0.024, 0.024) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_forearm_tweak.L.001 [MESH] parent=None pbone= loc=(0.179, 0.0, 0.176) dims=(0.024, 0.024, 0.024) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_forearm_tweak.R [MESH] parent=None pbone= loc=(-0.176, 0.003, 0.224) dims=(0.024, 0.024, 0.024) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_forearm_tweak.R.001 [MESH] parent=None pbone= loc=(-0.179, 0.0, 0.176) dims=(0.024, 0.024, 0.024) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_hand_fk.L [MESH] parent=None pbone= loc=(0.182, -0.002, 0.127) dims=(0.029, 0.0, 0.029) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_hand_fk.R [MESH] parent=None pbone= loc=(-0.182, -0.002, 0.127) dims=(0.029, 0.0, 0.029) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_hand_ik.L [MESH] parent=None pbone= loc=(0.182, -0.002, 0.127) dims=(0.0, 0.063, 0.051) hide=False colls=['WGTS_rig'] verts=8 tris=0 mats=[] mods=[('SUBSURF', None)]
+OBJ WGT-rig_hand_ik.R [MESH] parent=None pbone= loc=(-0.182, -0.002, 0.127) dims=(0.0, 0.063, 0.051) hide=False colls=['WGTS_rig'] verts=8 tris=0 mats=[] mods=[('SUBSURF', None)]
+OBJ WGT-rig_hand_tweak.L [MESH] parent=None pbone= loc=(0.182, -0.002, 0.127) dims=(0.009, 0.009, 0.009) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_hand_tweak.R [MESH] parent=None pbone= loc=(-0.182, -0.002, 0.127) dims=(0.009, 0.009, 0.009) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_Head [MESH] parent=None pbone= loc=(0.0, 0.0, 0.42) dims=(0.879, 0.0, 0.879) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_palm.L [MESH] parent=None pbone= loc=(0.182, 0.016, 0.105) dims=(0.007, 0.023, 0.018) hide=False colls=['WGTS_rig'] verts=16 tris=0 mats=[] mods=[('SUBSURF', None)]
+OBJ WGT-rig_palm.R [MESH] parent=None pbone= loc=(-0.182, 0.016, 0.105) dims=(0.007, 0.023, 0.018) hide=False colls=['WGTS_rig'] verts=16 tris=0 mats=[] mods=[('SUBSURF', None)]
+OBJ WGT-rig_root [MESH] parent=None pbone= loc=(0.0, 0.0, 0.0) dims=(0.924, 0.924, 0.0) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_thumb.01.L [MESH] parent=None pbone= loc=(0.178, -0.018, 0.113) dims=(0.011, 0.0, 0.011) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.01.L.001 [MESH] parent=None pbone= loc=(0.167, -0.052, 0.089) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.01.R [MESH] parent=None pbone= loc=(-0.178, -0.018, 0.113) dims=(0.011, 0.0, 0.011) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.01.R.001 [MESH] parent=None pbone= loc=(-0.167, -0.052, 0.089) dims=(0.003, 0.0, 0.003) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.01_master.L [MESH] parent=None pbone= loc=(0.178, -0.018, 0.113) dims=(0.007, 0.079, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_thumb.01_master.R [MESH] parent=None pbone= loc=(-0.178, -0.018, 0.113) dims=(0.007, 0.079, 0.0) hide=False colls=['WGTS_rig'] verts=6 tris=0 mats=[]
+OBJ WGT-rig_thumb.02.L [MESH] parent=None pbone= loc=(0.174, -0.033, 0.104) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.02.R [MESH] parent=None pbone= loc=(-0.174, -0.033, 0.104) dims=(0.009, 0.0, 0.009) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.03.L [MESH] parent=None pbone= loc=(0.171, -0.045, 0.096) dims=(0.006, 0.0, 0.006) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_thumb.03.R [MESH] parent=None pbone= loc=(-0.171, -0.045, 0.096) dims=(0.006, 0.0, 0.006) hide=False colls=['WGTS_rig'] verts=32 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_fk.L [MESH] parent=None pbone= loc=(0.169, 0.0, 0.332) dims=(0.054, 0.109, 0.054) hide=False colls=['WGTS_rig'] verts=34 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_fk.R [MESH] parent=None pbone= loc=(-0.169, 0.0, 0.332) dims=(0.054, 0.109, 0.054) hide=False colls=['WGTS_rig'] verts=34 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_ik.L [MESH] parent=None pbone= loc=(0.169, 0.0, 0.332) dims=(0.044, 0.109, 0.065) hide=False colls=['WGTS_rig'] verts=14 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_ik.R [MESH] parent=None pbone= loc=(-0.169, 0.0, 0.332) dims=(0.044, 0.109, 0.065) hide=False colls=['WGTS_rig'] verts=14 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_ik_target.L [MESH] parent=None pbone= loc=(0.178, 0.208, 0.222) dims=(0.026, 0.026, 0.026) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_ik_target.R [MESH] parent=None pbone= loc=(-0.178, 0.208, 0.222) dims=(0.026, 0.026, 0.026) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_parent.L [MESH] parent=None pbone= loc=(0.169, 0.0, 0.332) dims=(0.061, 0.0, 0.061) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_parent.R [MESH] parent=None pbone= loc=(-0.169, 0.0, 0.332) dims=(0.061, 0.0, 0.061) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_tweak.L [MESH] parent=None pbone= loc=(0.169, 0.0, 0.332) dims=(0.027, 0.027, 0.027) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_tweak.L.001 [MESH] parent=None pbone= loc=(0.173, 0.001, 0.278) dims=(0.027, 0.027, 0.027) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_tweak.R [MESH] parent=None pbone= loc=(-0.169, 0.0, 0.332) dims=(0.027, 0.027, 0.027) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_upper_arm_tweak.R.001 [MESH] parent=None pbone= loc=(-0.173, 0.001, 0.278) dims=(0.027, 0.027, 0.027) hide=False colls=['WGTS_rig'] verts=48 tris=0 mats=[]
+OBJ WGT-rig_VIS_upper_arm_ik_pole.L [MESH] parent=None pbone= loc=(0.176, 0.003, 0.224) dims=(0.0, 0.205, 0.0) hide=False colls=['WGTS_rig'] verts=2 tris=0 mats=[]
+OBJ WGT-rig_VIS_upper_arm_ik_pole.R [MESH] parent=None pbone= loc=(-0.176, 0.003, 0.224) dims=(0.0, 0.205, 0.0) hide=False colls=['WGTS_rig'] verts=2 tris=0 mats=[]
+ACTION 39 Sign (pose 39)Action range=(19.0, 21.0) users=1
+ACTION Bag.001Action range=(8.0, 10.0) users=1
+ACTION Bag.002Action range=(8.0, 10.0) users=1
+ACTION Bag.003Action range=(8.0, 10.0) users=1
+ACTION Bag.004Action range=(8.0, 10.0) users=1
+ACTION Bag.005Action range=(8.0, 10.0) users=1
+ACTION Bag.006Action range=(8.0, 10.0) users=1
+ACTION Bag.007Action range=(8.0, 10.0) users=1
+ACTION Bag.008Action range=(8.0, 10.0) users=1
+ACTION Bag.009Action range=(8.0, 10.0) users=1
+ACTION Bag.010Action range=(8.0, 10.0) users=1
+ACTION Bag.011Action range=(8.0, 10.0) users=1
+ACTION Bag.012Action range=(8.0, 10.0) users=1
+ACTION Bag.013Action range=(8.0, 10.0) users=1
+ACTION Bag.014Action range=(8.0, 10.0) users=1
+ACTION BagAction range=(8.0, 10.0) users=1
+ACTION Camera.002Action range=(3.0, 3.0) users=1
+ACTION Christmas Tree.001Action range=(8.0, 10.0) users=1
+ACTION Christmas Tree.002Action range=(8.0, 10.0) users=1
+ACTION Christmas Tree.003Action range=(8.0, 10.0) users=1
+ACTION Christmas TreeAction range=(8.0, 10.0) users=1
+ACTION Cube.001Action range=(15.0, 17.0) users=1
+ACTION Cube.006Action range=(7.0, 9.0) users=1
+ACTION CubeAction range=(8.0, 15.0) users=1
+ACTION Cushion_sofa3Action range=(12.0, 14.0) users=1
+ACTION Cylinder.003Action range=(7.0, 9.0) users=1
+ACTION Cylinder.015Action range=(11.0, 13.0) users=1
+ACTION Cylinder.016Action range=(11.0, 13.0) users=1
+ACTION Cylinder.017Action range=(11.0, 13.0) users=1
+ACTION Cylinder.018Action range=(11.0, 13.0) users=1
+ACTION Cylinder.019Action range=(11.0, 13.0) users=1
+ACTION Cylinder.044Action range=(15.0, 17.0) users=1
+ACTION Cylinder.045Action range=(15.0, 17.0) users=1
+ACTION Gift 1.001Action range=(8.0, 10.0) users=1
+ACTION Gift 1.002Action range=(8.0, 10.0) users=1
+ACTION Gift 1.003Action range=(8.0, 10.0) users=1
+ACTION Gift 1.004Action range=(8.0, 10.0) users=1
+ACTION Gift 1.005Action range=(8.0, 10.0) users=1
+ACTION Gift 1.006Action range=(8.0, 10.0) users=1
+ACTION Gift 1.007Action range=(8.0, 10.0) users=1
+ACTION Gift 1.008Action range=(8.0, 10.0) users=1
+ACTION Gift 1Action range=(8.0, 10.0) users=1
+ACTION Gift 2.001Action range=(8.0, 10.0) users=1
+ACTION Gift 2.002Action range=(8.0, 10.0) users=1
+ACTION Gift 2.003Action range=(8.0, 10.0) users=1
+ACTION Gift 2.004Action range=(8.0, 10.0) users=1
+ACTION Gift 2.005Action range=(8.0, 10.0) users=1
+ACTION Gift 2.006Action range=(8.0, 10.0) users=1
+ACTION Gift 2.007Action range=(8.0, 10.0) users=1
+ACTION Gift 2.008Action range=(8.0, 10.0) users=1
+ACTION Gift 2.009Action range=(8.0, 10.0) users=1
+ACTION Gift 2.010Action range=(8.0, 10.0) users=1
+ACTION Gift 2.011Action range=(8.0, 10.0) users=1
+ACTION Gift 2.012Action range=(8.0, 10.0) users=1
+ACTION Gift 2.013Action range=(8.0, 10.0) users=1
+ACTION Gift 2.014Action range=(8.0, 10.0) users=1
+ACTION Gift 2.015Action range=(8.0, 10.0) users=1
+ACTION Gift 2.016Action range=(8.0, 10.0) users=1
+ACTION Gift 2.017Action range=(8.0, 10.0) users=1
+ACTION Gift 2.018Action range=(8.0, 10.0) users=1
+ACTION Gift 2.019Action range=(8.0, 10.0) users=1
+ACTION Gift 2.020Action range=(8.0, 10.0) users=1
+ACTION Gift 2.021Action range=(8.0, 10.0) users=1
+ACTION Gift 2.022Action range=(8.0, 10.0) users=1
+ACTION Gift 2.023Action range=(8.0, 10.0) users=1
+ACTION Gift 2.024Action range=(8.0, 10.0) users=1
+ACTION Gift 2.025Action range=(8.0, 10.0) users=1
+ACTION Gift 2.026Action range=(8.0, 10.0) users=1
+ACTION Gift 2.027Action range=(8.0, 10.0) users=1
+ACTION Gift 2Action range=(8.0, 10.0) users=1
+ACTION HatAction range=(8.0, 10.0) users=1
+ACTION Heart.001Action range=(10.0, 12.0) users=1
+ACTION Heart.002Action range=(10.0, 12.0) users=1
+ACTION Heart.003Action range=(10.0, 12.0) users=1
+ACTION Heart.004Action range=(5.0, 7.0) users=1
+ACTION HeartAction range=(10.0, 12.0) users=1
+ACTION Icosphere.001Action range=(3.0, 7.0) users=1
+ACTION IcosphereAction range=(8.0, 20.0) users=1
+ACTION Mball.020Action range=(8.0, 20.0) users=1
+ACTION money.001Action range=(6.0, 8.0) users=1
+ACTION money.002Action range=(6.0, 8.0) users=1
+ACTION money.003Action range=(6.0, 8.0) users=1
+ACTION money.004Action range=(6.0, 8.0) users=1
+ACTION money.005Action range=(6.0, 8.0) users=1
+ACTION money.007Action range=(6.0, 8.0) users=1
+ACTION money.008Action range=(6.0, 8.0) users=1
+ACTION money.009Action range=(6.0, 8.0) users=1
+ACTION money.010Action range=(6.0, 8.0) users=1
+ACTION money.011Action range=(6.0, 8.0) users=1
+ACTION money.012Action range=(6.0, 8.0) users=1
+ACTION money.013Action range=(6.0, 8.0) users=1
+ACTION money.014Action range=(6.0, 8.0) users=1
+ACTION money.015Action range=(6.0, 8.0) users=1
+ACTION NurbsCurve.001Action range=(9.0, 11.0) users=1
+ACTION NurbsCurve.002Action range=(9.0, 11.0) users=1
+ACTION NurbsCurveAction range=(9.0, 11.0) users=1
+ACTION Plane.001Action range=(13.0, 15.0) users=1
+ACTION Plane.002Action range=(13.0, 15.0) users=1
+ACTION Plane.003Action range=(16.0, 18.0) users=1
+ACTION Plane.004Action range=(7.0, 9.0) users=1
+ACTION PlaneAction range=(13.0, 15.0) users=1
+ACTION Pose 1 range=(1.0, 1.0) users=1
+ACTION Pose 10 range=(10.0, 10.0) users=1
+ACTION Pose 11 range=(11.0, 11.0) users=1
+ACTION Pose 12 range=(12.0, 12.0) users=1
+ACTION Pose 13 range=(13.0, 13.0) users=1
+ACTION Pose 14 range=(14.0, 14.0) users=1
+ACTION Pose 15 range=(15.0, 15.0) users=1
+ACTION Pose 16 range=(16.0, 16.0) users=1
+ACTION Pose 17 range=(17.0, 17.0) users=1
+ACTION Pose 18 range=(18.0, 18.0) users=1
+ACTION Pose 19 range=(19.0, 19.0) users=1
+ACTION Pose 2 range=(2.0, 2.0) users=1
+ACTION Pose 20 range=(20.0, 20.0) users=1
+ACTION Pose 3 range=(3.0, 3.0) users=1
+ACTION Pose 4 range=(4.0, 4.0) users=1
+ACTION Pose 5 range=(5.0, 5.0) users=1
+ACTION Pose 6 range=(6.0, 6.0) users=1
+ACTION Pose 7 range=(7.0, 7.0) users=1
+ACTION Pose 8 range=(8.0, 8.0) users=1
+ACTION Pose 9 range=(9.0, 9.0) users=1
+ACTION rig_botAction range=(1.0, 20.0) users=1
+ACTION Text.001Action range=(12.0, 14.0) users=1
+ACTION Text.002Action range=(12.0, 14.0) users=1
+ACTION TextAction range=(12.0, 14.0) users=1
+ACTION TorusAction range=(7.0, 9.0) users=1
+MAT Bulb
+MAT Bulb base
+MAT Bulb steel
+MAT Cake
+MAT Cake Jelly
+MAT Cake JJelly
+MAT Chstitmas head
+MAT Chstitmas head base
+MAT Cloud
+MAT Coffee
+MAT Cushion
+MAT Dots Stroke
+MAT Drops
+MAT Gift and Trunk
+MAT Heart
+MAT Inside Bulb
+MAT Lollypop base
+MAT Lollypop upper
+MAT mat_bot
+MAT mat_bot_1
+MAT mat_bot_1_eye
+MAT mat_bot_2
+MAT mat_bot_3
+MAT mat_bot_4
+MAT mat_bot_5
+MAT mat_bot_eye
+MAT mat_bot_mouth
+MAT Mat_green
+MAT Mat_red
+MAT Money innder
+MAT Money outer
+MAT Money sign
+MAT Mug
+MAT Question mark
+MAT Rainbow
+MAT Rose 
+MAT Sign Inner
+MAT Sign outer
+MAT Spoon
+MAT Stem
+SCENES ['Scene'] engine=CYCLES

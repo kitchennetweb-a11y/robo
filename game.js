@@ -1,0 +1,100 @@
+// Robo game rules: what each event does. Pure (no DOM/three), so test.html can drive it.
+// step(state, event, now) mutates state and returns an act {clip, loop, face, sfx, say, fx, delay} or null.
+export const pick = a => a[Math.floor(Math.random() * a.length)];
+
+// face name -> [eye texture, mouth texture] in face/
+export const FACES = {
+  normal: ['eye_normal_bot_1', 'mouth_normal'], happy: ['eye_happy', 'mouth_happy'], joy: ['eye_joy', 'mouth_smile'],
+  sad: ['eye_sad', 'mouth_sad'], x: ['eye_x', 'mouth_O'], surprised: ['eye_normal_bot_1', 'mouth_O'],
+  star: ['eye_star', 'mouth_happy'], heart: ['eye_heart', 'mouth_smile'], sleep: ['eye_blink', 'mouth_flat'],
+};
+
+export const SAYS = {
+  greet: ['salam', 'salam_doostam', 'bia_bazi'], wake: ['bidar_shodam', 'sobh_bekheir'],
+  fall: ['oftadam', 'akh', 'vay', 'oh'], getup: ['pashodam', 'dobare'], full: ['ser_shodam', 'boo_mide'],
+  sleep: ['khabam_miad', 'shab_bekheir', 'in_takhte_mane'], fly: ['miram_bala', 'bala_balatar', 'bala'],
+  land: ['miam_paein', 'paein'], danceStart: ['biya_beraghsim'], danceEnd: ['afarin', 'afarin_kheili_khoob'],
+};
+
+export const REACT = {  // touch zone -> reaction
+  head: { clip: 'HeadPoke', face: 'surprised', sfx: 'head', say: ['akh_saram', 'sar', 'in_sarame', 'yavash'] },
+  face: { clip: 'Sneeze', face: 'surprised', sfx: 'face', say: ['hapche', 'cheshm', 'cheshmam', 'bini', 'dahan'] },
+  belly: { clip: 'BellyPoke', face: 'joy', sfx: 'belly', say: ['ghelghelakam_miad', 'shekam', 'ghelghelaki', 'hahaha'] },
+  foot: { clip: 'FootPoke', face: 'happy', sfx: 'feet', say: ['pa', 'pam_ro_zadi', 'bepar'] },
+  hand: { clip: 'ThumbsUp', face: 'happy', say: ['dast', 'in_dastame', 'afarin'] },
+  antenna: { clip: 'Dizzy', face: 'x', sfx: 'antenna', say: ['sar_gij', 'oh', 'vay'] },
+};
+
+export const FOOD = {
+  apple: { emoji: '🍎', say: ['sib', 'sib_mikham', 'sib_khoshmaze', 'khoshmaze'] },
+  banana: { emoji: '🍌', say: ['moz', 'moz_mikham', 'moz_dooset_daram', 'khoshmaze'] },
+  milk: { emoji: '🥛', say: ['shir', 'shir_mikham', 'shir_khordam'] },
+  water: { emoji: '💧', say: ['ab', 'ab_mikham', 'ab_khonak'] },
+  bread: { emoji: '🍞', say: ['nan', 'nan_mikham', 'khoshmaze', 'nosh_jan'] },
+};
+
+export const FALLS = [['Fall', 'GetUp'], ['FallBack', 'GetUpBack'], ['FallFront', 'GetUpFront'], ['FallApart', 'Reassemble']];
+export const DANCES = [['DanceWiggle', 'beraghs'], ['DanceSpin', 'becharkh'], ['DanceJump', 'bepar'], ['DanceJump', 'dast_bezan']];
+export const SILLY = [  // random thing to do when nobody has touched Robo for a while
+  { clip: 'Fart', face: 'joy', fx: 'fart', say: ['oops', 'boo_mide', 'in_chi_bood'] },
+  { clip: 'Sneeze', face: 'surprised', say: ['hapche', 'bebakhshid'] },
+  { clip: 'Wave', face: 'happy', sfx: 'bored', say: ['gorosnam', 'bia_bazi', 'biya_inja', 'ghaza_mikham'] },
+  { clip: 'FootPoke', face: 'joy', say: ['bepar', 'dobare'] },
+];
+
+const IDLE = { clip: 'Idle', loop: true, face: 'normal' };
+const once = r => ({ ...r, say: r.say && pick(r.say) });
+export const S0 = () => ({ mode: 'idle', next: [], taps: [], fed: [] });
+
+export function step(s, ev, now = Date.now()) {
+  const free = s.mode === 'idle' || s.mode === 'react';
+  switch (ev.type) {
+    case 'greet':
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return { clip: 'Wave', face: 'happy', sfx: 'hi', say: pick(SAYS.greet) };
+    case 'tap':
+      if (s.mode === 'sleep') return wake(s);
+      if (!free) return null;
+      s.taps = s.taps.filter(t => now - t < 2000).concat(now);
+      if (s.taps.length >= 4) {  // too many pokes: fall over, wait, get up
+        const [fall, up] = pick(FALLS); s.taps = []; s.mode = 'react';
+        s.next = [{ clip: up, face: 'happy', say: pick(SAYS.getup), delay: 900 }];
+        return { clip: fall, face: 'x', say: pick(SAYS.fall) };
+      }
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return once(REACT[ev.zone]);
+    case 'feed': {
+      if (!free) return null;
+      s.fed = s.fed.filter(t => now - t < 60000).concat(now); s.mode = 'react'; s.next = [];
+      if (s.fed.length >= 3) { s.fed = []; s.next = [{ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }]; }
+      return { clip: 'Eat', face: 'heart', say: pick(FOOD[ev.food].say) };
+    }
+    case 'bored':
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return once(pick(SILLY));
+    case 'bed':
+      if (s.mode === 'sleep') return wake(s);
+      if (!free) return null;
+      s.mode = 'sleep'; s.next = []; return { clip: 'Sleep', loop: true, face: 'sleep', fx: 'night', say: pick(SAYS.sleep) };
+    case 'speaker':
+      if (s.mode === 'dance') { s.mode = 'idle'; return { ...IDLE, face: 'happy', fx: 'musicOff', say: pick(SAYS.danceEnd) }; }
+      if (!free) return null;
+      s.mode = 'dance'; s.next = []; return { clip: 'DanceWiggle', loop: true, face: 'star', fx: 'music', sfx: 'dance', say: pick(SAYS.danceStart) };
+    case 'danceStep': {
+      if (s.mode !== 'dance') return null;
+      const [clip, say] = pick(DANCES); return { clip, loop: true, say };
+    }
+    case 'swipeUp':
+      if (!free) return null;
+      s.mode = 'fly'; s.next = []; return { clip: 'Fly', loop: true, face: 'joy', sfx: 'rocket', fx: 'flyTimer', say: pick(SAYS.fly) };
+    case 'flyEnd':
+      if (s.mode !== 'fly') return null;
+      s.mode = 'idle'; return { ...IDLE, sfx: 'fly', say: pick(SAYS.land) };
+    case 'clipDone':
+      if (s.mode !== 'react') return null;
+      if (s.next.length) return s.next.shift();
+      s.mode = 'idle'; return IDLE;
+  }
+  return null;
+}
+function wake(s) { s.mode = 'react'; s.next = []; return { clip: 'Wave', face: 'happy', sfx: 'wake', fx: 'day', say: pick(SAYS.wake) }; }

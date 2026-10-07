@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f6e7d8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Robo</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #f6e7d8; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  canvas { display: block; }
+  #ear { position: fixed; left: 20px; bottom: 20px; font-size: 56px; line-height: 1; padding: 16px; border: 0; border-radius: 50%;
+    background: #fff9; transition: box-shadow .3s; }
+  #ear.on { background: #7fe0d6; box-shadow: 0 0 0 10px #7fe0d655; }
+  #tray { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 12px; padding: 10px 16px; background: #fff9; border-radius: 44px; }
+  @media (max-width: 600px) { #tray { right: auto; left: 50%; transform: translateX(-50%); bottom: auto; top: 16px; } }
+  .food { font-size: 54px; touch-action: none; }
+  .drag { position: fixed; font-size: 80px; pointer-events: none; transform: translate(-50%, -50%); z-index: 9; }
+  .z { position: fixed; font-size: 44px; pointer-events: none; animation: z 2.6s linear forwards; }
+  @keyframes z { to { transform: translate(50px, -140px); opacity: 0; } }
+  #corner { position: fixed; left: 0; top: 0; width: 90px; height: 90px; }
+  #parent { position: fixed; inset: 8%; background: #fff; border-radius: 20px; padding: 24px; font: 17px system-ui; overflow: auto;
+    display: none; z-index: 10; box-shadow: 0 10px 40px #0004; }
+  #parent td { padding: 2px 10px; } #parent button { font-size: 17px; padding: 8px 16px; margin-right: 8px; }
+</style>
+</head>
+<body>
+<button id="ear" aria-label="Talk to Robo">👂</button>
+<div id="tray"></div>
+<div id="corner"></div>
+<div id="parent"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { S0, step, FACES, FOOD, pick } from './game.js';
+
+const PH = Object.fromEntries((await (await fetch('phrases.json')).json()).map(p => [p.id, p]));
+const DEBUG = location.search.includes('debug');
+const $ = id => document.getElementById(id);
+
+// ---------- stats (parent area) ----------
+const stats = Object.assign({ minutes: 0, spoken: 0, words: {} }, JSON.parse(localStorage.getItem('robo') || '{}'));
+const save = () => localStorage.setItem('robo', JSON.stringify(stats));
+setInterval(() => { if (document.visibilityState === 'visible') { stats.minutes++; save(); } }, 60000);
+
+// ---------- scene ----------
+const r = new THREE.WebGLRenderer({ antialias: true });
+r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.prepend(r.domElement);
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(38, 1, .1, 50);
+const DAY = new THREE.Color(0xf6e7d8), NIGHT = new THREE.Color(0x2b3050);
+scene.background = DAY.clone();
+const hemi = new THREE.HemisphereLight(0xfff4e8, 0xc8b8a8, 2.2), sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(1.5, 3, 2); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left: -2.5, right: 2.5, top: 2.5, bottom: -2.5 });
+scene.add(hemi, sun);
+function resize() {
+  r.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight;
+  cam.position.set(0, .85, cam.aspect < 1 ? 4.6 : 3.1); cam.lookAt(0, .5, 0); cam.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+// room from primitives; props carry userData.hit so taps on them become events
+const props = [];
+function box(w, h, d, color, x, y, z, hit) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: .9 }));
+  m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; m.userData.hit = hit; scene.add(m);
+  if (hit) props.push(m); return m;
+}
+box(10, .02, 8, 0xe9d5c0, 0, -.01, 0);                 // floor
+box(10, 5, .05, 0xcfe3ef, 0, 2.5, -1.8);               // back wall
+box(1.3, .9, .03, 0xffffff, .9, 1.7, -1.77);           // window frame
+box(1.15, .75, .03, 0xaedcf5, .9, 1.7, -1.75);         // window glass
+const rug = new THREE.Mesh(new THREE.CircleGeometry(.85, 48), new THREE.MeshStandardMaterial({ color: 0xf3b6c3 }));
+rug.rotation.x = -Math.PI / 2; rug.position.y = .002; rug.receiveShadow = true; scene.add(rug);
+box(1.1, .28, .65, 0x8fb3d9, -1.65, .14, -.8, 'bed');  // bed
+box(1.05, .1, .6, 0xffffff, -1.65, .33, -.8, 'bed');
+box(.3, .09, .42, 0xffe08a, -2.05, .42, -.8, 'bed');
+box(.08, .65, .65, 0x8fb3d9, -2.2, .33, -.8, 'bed');
+box(.4, .62, .34, 0x5b5f7a, 1.65, .31, -.7, 'speaker'); // speaker
+for (const [y, rad] of [[.44, .1], [.2, .07]]) {
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, .02, 24), new THREE.MeshStandardMaterial({ color: 0x2a2d3f }));
+  c.rotation.x = Math.PI / 2; c.position.set(1.65, y, -.52); c.userData.hit = 'speaker'; scene.add(c); props.push(c);
+}
+
+// ---------- robot ----------
+const gltf = await new GLTFLoader().loadAsync('robo.glb');
+const robot = gltf.scene; scene.add(robot);
+robot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
+const bone = n => robot.getObjectByName(n);
+const head = bone('DEF-Head'), body = bone('DEF-Body');
+const mixer = new THREE.AnimationMixer(robot);
+const clips = Object.fromEntries(gltf.animations.map(c => [c.name, mixer.clipAction(c)]));
+let cur;
+function playClip(name, loop) {
+  const a = clips[name]; if (!a) return console.warn('missing clip', name);
+  a.reset(); a.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce); a.clampWhenFinished = !loop;
+  if (cur && cur !== a) a.crossFadeFrom(cur, .25, false);
+  a.play(); cur = a;
+}
+mixer.addEventListener('finished', e => { if (e.action === cur) dispatch({ type: 'clipDone' }); });
+
+// face = texture swap on the eye and mouth materials
+let eyeMat, mouthMat;
+robot.traverse(o => { if (o.material?.name === 'mat_bot_1_eye') eyeMat = o.material; if (o.material?.name === 'mat_bot_mouth') mouthMat = o.material; });
+const tl = new THREE.TextureLoader(), texCache = {};
+const faceTex = n => texCache[n] ??= Object.assign(tl.load(`face/${n}.png`), { flipY: false, colorSpace: THREE.SRGBColorSpace });
+for (const n of [...Object.values(FACES).flat(), 'eye_blink', 'mouth_A', 'mouth_O']) faceTex(n);
+const setTex = (m, n) => { const t = faceTex(n); if (m.map !== t) { m.map = t; if (m.emissiveMap) m.emissiveMap = t; } };
+let face = 'normal', blinkUntil = 0, nextBlink = 0, talkUntil = 0;
+function applyFace(now) {
+  if (now > nextBlink) { blinkUntil = now + 130; nextBlink = now + 2500 + Math.random() * 3500; }
+  const [eye, mouth] = FACES[face];
+  setTex(eyeMat, now < blinkUntil && ['normal', 'happy', 'joy'].includes(face) ? 'eye_blink' : eye);
+  setTex(mouthMat, now < talkUntil ? ['mouth_A', 'mouth_O', mouth][Math.floor(now / 110) % 3] : mouth);
+}
+
+// touch zones: invisible spheres riding on bones (?debug shows them)
+const zones = [];
+function zone(boneName, hit, y, rad) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(rad, 12, 8), new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true, visible: DEBUG }));
+  m.position.y = y; m.userData.hit = hit; bone(boneName).add(m); zones.push(m);
+}
+zone('DEF-Head', 'head', .15, .21); zone('DEF-Body', 'belly', .24, .15); zone('DEF-Body', 'foot', .06, .12);
+zone('Antenna_Spring', 'antenna', .17, .09); zone('DEF-handL', 'hand', .03, .08); zone('DEF-handR', 'hand', .03, .08);
+
+// ---------- audio ----------
+const ac = new (window.AudioContext || window.webkitAudioContext)();
+const bufs = {}; let audioBusyUntil = 0;
+const loadBuf = async u => { const res = await fetch(u); if (!res.ok) throw res.status; return ac.decodeAudioData(await res.arrayBuffer()); };
+function playBuf(b, rate = 1) {
+  const s = ac.createBufferSource(); s.buffer = b; s.playbackRate.value = rate; s.connect(ac.destination); s.start();
+  audioBusyUntil = Math.max(audioBusyUntil, performance.now() + b.duration / rate * 1000 + 400);
+  return b.duration / rate * 1000;
+}
+for (const n of ['antenna', 'belly', 'bored', 'dance', 'face', 'feet', 'fly', 'head', 'hi', 'rocket', 'wake'])
+  loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
+const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
+let faVoice = null;
+const findVoice = () => faVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith('fa')) || null;
+if (window.speechSynthesis) { findVoice(); speechSynthesis.onvoiceschanged = findVoice; }
+async function say(id) {
+  const p = PH[id]; if (!p) return;
+  stats.words[id] = (stats.words[id] || 0) + 1; save();
+  if (bufs[id] === undefined) bufs[id] = await loadBuf(`audio/${id}.mp3`).catch(() => null);
+  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id]); return; }
+  // ponytail: no ElevenLabs file yet -> device Persian voice if it has one, otherwise just the mouth moves
+  if (faVoice) { const u = new SpeechSynthesisUtterance(p.fa); u.voice = faVoice; u.lang = faVoice.lang; speechSynthesis.speak(u); }
+  talkUntil = performance.now() + 350 * p.fa.split(/\s+/).length + 300;
+}
+
+// tiny synth: fart, snore, dance beat
+function tone(type, f0, f1, dur, vol, lp = 500, wob = 0, when = 0) {
+  const t = ac.currentTime + when, o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  if (wob) { const l = ac.createOscillator(), lg = ac.createGain(); l.frequency.value = 28; lg.gain.value = wob; l.connect(lg).connect(o.frequency); l.start(t); l.stop(t + dur); }
+  f.type = 'lowpass'; f.frequency.value = lp;
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(f).connect(g).connect(ac.destination); o.start(t); o.stop(t + dur + .02);
+}
+let beatTimer, danceTimer, danceEnd, snoreTimer;
+const BASS = [110, 110, 165, 147, 131, 131, 165, 98];
+function music(on) {
+  clearInterval(beatTimer); clearInterval(danceTimer); clearTimeout(danceEnd);
+  if (!on) return;
+  let i = 0;
+  beatTimer = setInterval(() => {  // 120 bpm, eighth notes
+    if (i % 2 === 0) tone('sine', 150, 45, .2, .9, 2000);
+    else tone('square', 7000, 6000, .04, .08, 12000);
+    if (i % 2 === 0) tone('sawtooth', BASS[(i / 2) % 8], BASS[(i / 2) % 8], .22, .18, 900);
+    i++;
+  }, 250);
+  danceTimer = setInterval(() => dispatch({ type: 'danceStep' }), 4000);
+  danceEnd = setTimeout(() => dispatch({ type: 'speaker' }), 24000);
+}
+
+// ---------- effects ----------
+const puffs = [];
+function fart() {
+  tone('sawtooth', 95, 45, .75, .7, 600, 25);
+  for (let i = 0; i < 8; i++) {
+    const m = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), new THREE.MeshBasicMaterial({ color: 0x9bd36a, transparent: true, opacity: .5 }));
+    m.position.set((Math.random() - .5) * .2, .12 + Math.random() * .1, -.22);
+    m.userData = { v: new THREE.Vector3((Math.random() - .5) * .4, .2 + Math.random() * .25, -.25), t0: performance.now() };
+    scene.add(m); puffs.push(m);
+  }
+}
+function zzz() {
+  const p = new THREE.Vector3(); head.getWorldPosition(p); p.y += .35; p.project(cam);
+  const z = Object.assign(document.createElement('div'), { className: 'z', textContent: '💤' });
+  z.style.left = (p.x + 1) / 2 * innerWidth + 'px'; z.style.top = (1 - p.y) / 2 * innerHeight + 'px';
+  document.body.append(z); setTimeout(() => z.remove(), 2700);
+}
+const FX = {
+  fart,
+  music: () => music(true), musicOff: () => music(false),
+  flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
+  night() {
+    scene.background.copy(NIGHT); hemi.intensity = .5; sun.intensity = .25;
+    snoreTimer = setInterval(() => { tone('sawtooth', 75, 60, 1.3, .12, 300, 6); zzz(); }, 3200);
+  },
+  day() { scene.background.copy(DAY); hemi.intensity = 2.2; sun.intensity = 2.2; clearInterval(snoreTimer); },
+};
+
+// ---------- game loop glue ----------
+const st = S0();
+function dispatch(ev) { const a = step(st, ev); if (a) run(a); }
+function run(a) {
+  const go = () => {
+    if (a.clip) playClip(a.clip, a.loop);
+    if (a.face) face = a.face;
+    if (a.fx) FX[a.fx]();
+    const wait = a.sfx ? sfx(a.sfx) : 0;  // let the sound effect finish before talking
+    if (a.say) setTimeout(() => say(a.say), Math.min(wait, 2500));
+  };
+  a.delay ? setTimeout(go, a.delay) : go();
+}
+
+// ---------- input ----------
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), look = new THREE.Vector2(), lookNow = new THREE.Vector2();
+let lastUser = performance.now(), boredAfter = 40000, greeted = false, down = null;
+function hitAt(x, y) {
+  ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, cam);
+  return ray.intersectObjects([...zones, ...props], false)[0];
+}
+function unlock() {
+  if (ac.state !== 'running') ac.resume();
+  lastUser = performance.now();
+  if (!greeted && clips.Idle) { greeted = true; dispatch({ type: 'greet' }); }
+}
+r.domElement.addEventListener('pointerdown', e => {
+  unlock(); down = { x: e.clientX, y: e.clientY };
+  look.set((e.clientX / innerWidth - .5) * 1.0, (e.clientY / innerHeight - .5) * .6);
+});
+r.domElement.addEventListener('pointerup', e => {
+  if (!down) return;
+  const dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
+  if (!h) return;
+  let z = h.object.userData.hit;
+  if (z === 'bed' || z === 'speaker') return dispatch({ type: z });
+  if (dy < -80) return dispatch({ type: 'swipeUp' });
+  const hp = new THREE.Vector3(); head.getWorldPosition(hp);
+  if (z === 'head' && h.point.z > hp.z + .1 && h.point.y < hp.y + .25) z = 'face';  // front of the head = the screen face
+  dispatch({ type: 'tap', zone: z });
+});
+
+// food tray: drag onto Robo to feed, tap to hear the word
+function nearRobot(x, y) {
+  const p = new THREE.Vector3(); body.getWorldPosition(p); p.y += .35; p.project(cam);
+  return Math.hypot((p.x + 1) / 2 * innerWidth - x, (1 - p.y) / 2 * innerHeight - y) < Math.min(innerWidth, innerHeight) * .25;
+}
+for (const [food, f] of Object.entries(FOOD)) {
+  const el = Object.assign(document.createElement('span'), { className: 'food', textContent: f.emoji });
+  $('tray').append(el);
+  el.addEventListener('pointerdown', e => {
+    unlock(); e.preventDefault();
+    const g = Object.assign(document.createElement('div'), { className: 'drag', textContent: f.emoji }), x0 = e.clientX, y0 = e.clientY;
+    document.body.append(g);
+    const mv = e => { g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; }; mv(e);
+    const up = e => {
+      removeEventListener('pointermove', mv); removeEventListener('pointerup', up); g.remove();
+      if (Math.hypot(e.clientX - x0, e.clientY - y0) < 15) return say(f.say[0]);
+      if (nearRobot(e.clientX, e.clientY)) dispatch({ type: 'feed', food });
+    };
+    addEventListener('pointermove', mv); addEventListener('pointerup', up);
+  });
+}
+
+// talk-back: listen, record until quiet, play back as a squeaky robot
+const TH = .04;  // ponytail: mic loudness gate, tune on the real iPad if it triggers too easily / never
+let mic, an, td, rec, recMime, chunks, recT0, loudT;
+$('ear').onclick = async () => {
+  unlock();
+  if (mic) { mic.getTracks().forEach(t => t.stop()); mic = null; $('ear').classList.remove('on'); return; }
+  try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); } catch { return; }
+  an = ac.createAnalyser(); an.fftSize = 1024; td = new Float32Array(1024);
+  ac.createMediaStreamSource(mic).connect(an); $('ear').classList.add('on');
+};
+function listen(now) {
+  if (!mic || st.mode === 'sleep') return;
+  an.getFloatTimeDomainData(td);
+  let sum = 0; for (const v of td) sum += v * v;
+  const loud = Math.sqrt(sum / td.length) > TH;
+  if (!rec) {
+    if (loud && now > audioBusyUntil) {
+      chunks = []; rec = new MediaRecorder(mic); recMime = rec.mimeType;
+      rec.ondataavailable = e => chunks.push(e.data); rec.onstop = playBack; rec.start(); recT0 = loudT = now; face = 'surprised';
+    }
+    return;
+  }
+  if (loud) loudT = now;
+  if (now - loudT > 800 || now - recT0 > 6000) { rec.stop(); rec = null; }
+}
+async function playBack() {
+  const b = await ac.decodeAudioData(await new Blob(chunks, { type: recMime }).arrayBuffer()).catch(() => null);
+  if (!b || b.duration < .3) return;
+  face = 'joy'; talkUntil = performance.now() + playBuf(b, 1.45);
+  stats.spoken++; save();
+}
+
+// parent area: hold the top-left corner for 3 seconds
+let pressT;
+$('corner').onpointerdown = () => pressT = setTimeout(openParent, 3000);
+$('corner').onpointerup = $('corner').onpointerleave = () => clearTimeout(pressT);
+function openParent() {
+  const heard = Object.entries(stats.words).sort((a, b) => b[1] - a[1]);
+  const notYet = Object.keys(PH).filter(id => !stats.words[id]).length;
+  $('parent').innerHTML = `<h2>Robo — parents</h2>
+    <p>Minutes played: <b>${stats.minutes}</b> · Robot repeats (mic): <b>${stats.spoken}</b> · Phrases not heard yet: <b>${notYet}</b> of ${Object.keys(PH).length}</p>
+    <p><button id="close">Close</button><button id="reset">Reset stats</button></p>
+    <table>${heard.map(([id, n]) => `<tr><td dir="rtl">${PH[id]?.fa}</td><td>${PH[id]?.en}</td><td>${n}×</td></tr>`).join('')}</table>`;
+  $('parent').style.display = 'block';
+  $('close').onclick = () => $('parent').style.display = 'none';
+  $('reset').onclick = () => { if (confirm('Reset all stats?')) { localStorage.removeItem('robo'); location.reload(); } };
+}
+
+// ---------- frame loop ----------
+const clock = new THREE.Clock(), lookQ = new THREE.Quaternion(), lookE = new THREE.Euler();
+playClip('Idle', true);
+r.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), .1), now = performance.now();
+  mixer.update(dt);
+  // head follows the last touch while idle, drifting back to centre after a few seconds
+  if (now - lastUser > 3000) look.set(0, 0);
+  lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
+  head.quaternion.multiply(lookQ.setFromEuler(lookE.set(lookNow.y, lookNow.x, 0)));
+  applyFace(now);
+  for (let i = puffs.length - 1; i >= 0; i--) {
+    const m = puffs[i], age = (now - m.userData.t0) / 1300;
+    if (age > 1) { scene.remove(m); puffs.splice(i, 1); continue; }
+    m.position.addScaledVector(m.userData.v, dt); m.scale.setScalar(1 + age * 3); m.material.opacity = .5 * (1 - age);
+  }
+  listen(now);
+  if (st.mode === 'idle' && greeted && now - lastUser > boredAfter) { lastUser = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
+  r.render(scene, cam);
+});
+
+if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
+window.robo = { dispatch, st, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<meta charset="utf-8"><title>GLB check</title>
+<style>body{margin:0;background:#dde3ea;font:14px sans-serif}#ui{position:fixed;top:8px;left:8px;display:flex;flex-wrap:wrap;gap:4px;max-width:96vw}</style>
+<div id="ui"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const r = new THREE.WebGLRenderer({ antialias: true }); r.setSize(innerWidth, innerHeight); document.body.append(r.domElement);
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .1, 50);
+cam.position.set(.6, 1.0, 3.2); cam.lookAt(0, .5, 0);
+const sun = new THREE.DirectionalLight(0xffffff, 2); sun.position.set(2, 3, 2);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x99aabb, 2), sun);
+const g = await new GLTFLoader().loadAsync('../robo.glb');
+scene.add(g.scene);
+const mixer = new THREE.AnimationMixer(g.scene); let cur;
+const play = n => { cur?.stop(); cur = mixer.clipAction(THREE.AnimationClip.findByName(g.animations, n)).play(); };
+for (const a of g.animations) { const b = document.createElement('button'); b.textContent = a.name; b.onclick = () => play(a.name); ui.append(b); }
+window.report = { anims: g.animations.map(a => `${a.name} ${a.duration.toFixed(2)}s ${a.tracks.length}tr`),
+  mats: [], tris: 0 };
+g.scene.traverse(o => { if (o.isMesh) { report.tris += o.geometry.index.count / 3;
+  report.mats.push(`${o.name}:${o.material.name} color=${o.material.color.getHexString()} map=${!!o.material.map} transparent=${o.material.transparent}`); } });
+play('Idle');
+window.gltf = g;
+window.bonePos = n => { const v = new THREE.Vector3(); g.scene.getObjectByName(n).getWorldPosition(v); return v.toArray().map(x => +x.toFixed(3)); };
+window.pose = (n, t) => { play(n); cur.paused = true; cur.time = t; mixer.update(0); };
+const clock = new THREE.Clock();
+r.setAnimationLoop(() => { mixer.update(clock.getDelta()); r.render(scene, cam); });
+</script>

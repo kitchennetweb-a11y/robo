@@ -1,0 +1,9 @@
+# Robotz pack sources stay local (size + license); only the built robo.glb/face/ ship
+blender/src/
+blender/ref/
+blender/preview/
+blender/*.zip
+*.blend
+*.blend1
+Virtual Pet Sounds/
+.claude/
