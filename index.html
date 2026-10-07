@@ -90,7 +90,7 @@ for (const [y, rad] of [[.44, .1], [.2, .07]]) {
   c.rotation.x = Math.PI / 2; c.position.set(1.65, y, -.52); c.userData.hit = 'speaker'; scene.add(c); props.push(c);
 }
 // toy rocket on the floor: tap it and Robo blasts off
-const rocketToy = new THREE.Group(); rocketToy.position.set(.8, 0, .5); rocketToy.rotation.y = -.4; scene.add(rocketToy);
+const rocketToy = new THREE.Group(); rocketToy.position.set(.85, 0, .1);  // beside Robo, behind the ball's fence (z .35) so the ball never hits it rocketToy.rotation.y = -.4; scene.add(rocketToy);
 function part(geo, color, x, y, z) {
   const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: .5 }));
   m.position.set(x, y, z); m.castShadow = true; m.userData.hit = 'rocket'; rocketToy.add(m); props.push(m); return m;
@@ -143,19 +143,23 @@ function stepBubbles(dt, now) {
     else if (now - u.t0 > u.life || b.position.y > 2.4) popBubble(b, false);
   }
 }
-const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }, { x: .8, z: .5, r: .12 }, { x: BOTTLE.x, z: BOTTLE.z, r: .08 }];  // Robo, rocket, bottle
+const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }];  // rocket and bottle sit behind the ball's fence
 let kickCool = 0;
 function stepBall(dt, now) {
   ball.position.addScaledVector(ballV, dt); ballV.multiplyScalar(Math.max(0, 1 - 1.2 * dt));
-  for (const [ax, lo, hi] of [['x', -1.15, 1.3], ['z', -1.3, 1.1]]) {  // play area between bed and speaker
+  for (const [ax, lo, hi] of [['x', -1.15, 1.3], ['z', .35, 1.1]]) {  // play area: in front of Robo only, so it's always visible
     if (ball.position[ax] < lo) { ball.position[ax] = lo; ballV[ax] = Math.abs(ballV[ax]) * .7; }
     if (ball.position[ax] > hi) { ball.position[ax] = hi; ballV[ax] = -Math.abs(ballV[ax]) * .7; }
   }
   for (const o of OBSTACLES) {
     const dx = ball.position.x - o.x, dz = ball.position.z - o.z, d = Math.hypot(dx, dz), min = o.r + BALL_R;
-    if (d >= min || d === 0) continue;
+    if (d > min + .002 || d === 0) continue;  // (resting contact counts, so a waiting ball gets kicked later)
     const nx = dx / d, nz = dz / d; ball.position.x = o.x + nx * min; ball.position.z = o.z + nz * min;
-    if (o.robo && st.mode === 'idle' && now > kickCool) { kickCool = now + 1500; ballV.set(0, 0, 0); dispatch({ type: 'ball' }); continue; }
+    if (o.robo) {  // ball reached Robo: kick it back, or wait at his feet until he's free
+      ballV.set(0, 0, 0);
+      if (st.mode === 'idle' && now > kickCool) { kickCool = now + 600; dispatch({ type: 'ball' }); }
+      continue;
+    }
     const vn = ballV.x * nx + ballV.z * nz; if (vn < 0) { ballV.x -= 1.7 * vn * nx; ballV.z -= 1.7 * vn * nz; }
   }
   const sp = ballV.length(); if (sp > 1e-3) ball.rotateOnWorldAxis(rollAxis.set(ballV.z, 0, -ballV.x).normalize(), sp * dt / BALL_R);
@@ -284,7 +288,7 @@ const FX = {
   fart, bubbles: blowBubbles,
   music: () => music(true), musicOff: () => music(false),
   flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
-  kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 2.1; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // back toward the child
+  kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 1.2; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // straight back toward the screen (±35°)
   night() {
     scene.background.copy(NIGHT); hemi.intensity = .5; sun.intensity = .25;
     snoreTimer = setInterval(() => { tone('sawtooth', 75, 60, 1.3, .12, 300, 6); zzz(); }, 3200);
@@ -318,10 +322,6 @@ function unlock() {
   lastUser = performance.now();
   if (!greeted && clips.Idle) { greeted = true; dispatch({ type: 'greet' }); }
 }
-// ball dragging: follows the finger on the floor; letting go throws it with the finger's speed
-const floorAtBall = new THREE.Plane(new THREE.Vector3(0, 1, 0), -BALL_R), hitP = new THREE.Vector3();
-let drag = null;
-function floorAt(x, y) { ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, cam); return ray.ray.intersectPlane(floorAtBall, hitP); }
 r.domElement.addEventListener('pointerdown', e => {
   unlock(); down = { x: e.clientX, y: e.clientY };
   look.set((e.clientX / innerWidth - .5) * 1.0, (e.clientY / innerHeight - .5) * .6);
@@ -329,21 +329,12 @@ r.domElement.addEventListener('pointerdown', e => {
   const gap = b => ray.ray.distanceToPoint(b.position) - b.userData.size;  // closest bubble to the finger, generous reach
   const bub = bubbles.filter(b => gap(b) < .07).sort((a, b) => gap(a) - gap(b))[0];
   if (bub) { popBubble(bub); down = null; return; }
-  if (hitAt(e.clientX, e.clientY)?.object === ball) { drag = { t: performance.now(), moved: 0, v: new THREE.Vector3() }; ballV.set(0, 0, 0); }
-});
-addEventListener('pointermove', e => {
-  if (!drag || !floorAt(e.clientX, e.clientY)) return;
-  const now = performance.now(), dt = Math.max(now - drag.t, 8) / 1000;
-  hitP.x = THREE.MathUtils.clamp(hitP.x, -1.15, 1.3); hitP.z = THREE.MathUtils.clamp(hitP.z, -1.3, 1.1);
-  drag.v.subVectors(hitP, ball.position).divideScalar(dt).setY(0); drag.moved += ball.position.distanceTo(hitP);
-  ball.position.x = hitP.x; ball.position.z = hitP.z; drag.t = now;
+  if (ray.ray.distanceToPoint(ball.position) < BALL_R + .07) {  // tap the ball (generous reach): it rolls to Robo's feet
+    ballV.set(-ball.position.x, 0, .37 - ball.position.z);  // aim just in front of him (the fence keeps it from going behind)
+    ballV.setLength(Math.max(1.2, ballV.length() * 1.2 + .5)); down = null;  // friction 1.2/s: enough speed to always arrive
+  }
 });
 r.domElement.addEventListener('pointerup', e => {
-  if (drag) {  // tap = roll it to Robo, flick = throw
-    if (drag.moved < .05) ballV.set(-ball.position.x, 0, -ball.position.z).setLength(1.6);
-    else ballV.copy(drag.v).clampLength(0, 3.5);
-    drag = down = null; return;
-  }
   if (!down) return;
   const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
@@ -434,7 +425,7 @@ r.setAnimationLoop(() => {
   mixer.update(dt);
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
-  if (!drag) stepBall(dt, now);
+  stepBall(dt, now);
   stepBubbles(dt, now);
   if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
   if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
@@ -463,7 +454,7 @@ r.setAnimationLoop(() => {
 });
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, ball, ballV, bubbles, cam, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, ball, ballV, bubbles, cam, stepBall, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>
