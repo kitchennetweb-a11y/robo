@@ -25,7 +25,7 @@ const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
 ok(!noTex.length, 'every face texture exists ' + noTex);
 const faceRefs = [...Object.values(REACT), ...SILLY].map(r => r.face); ok(faceRefs.every(f => FACES[f]), 'every face name is defined');
-const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', 'ball', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
+const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', 'ball', 'bubbles', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
 const noSfx = (await Promise.all(sfx.map(async n => (await fetch(`sfx/${n}.mp3`, { method: 'HEAD' })).ok ? null : n))).filter(Boolean);
 ok(!noSfx.length, 'every sfx exists ' + noSfx);
 
@@ -35,6 +35,7 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); let a; for (let i = 0; i < 4; i++) a = step(s, { type: 'tap', zone: 'head' }, i * 200);
   ok(FALLS.some(f => f[0] === a?.clip), `4 quick taps -> ${a?.clip}`); const up = step(s, { type: 'clipDone' });
   ok(FALLS.some(f => f[0] === a.clip && f[1] === up?.clip), `-> matching get-up ${up?.clip}`); ok(settle(s) === 'idle', '-> idle'); }
+{ const s = S0(); ok(step(s, { type: 'tap', zone: 'nope' }) === null && s.mode === 'idle', 'unknown tap zone is ignored, Robo not stuck'); }
 { const s = S0(); step(s, { type: 'tap', zone: 'head' }, 0); step(s, { type: 'tap', zone: 'head' }, 5000); ok(s.mode === 'react' && settle(s) === 'idle', 'slow taps do not fall'); }
 { const s = S0(); step(s, { type: 'bed' }); ok(s.mode === 'sleep', 'bed -> sleep'); ok(step(s, { type: 'tap', zone: 'belly' })?.fx === 'day' && settle(s) === 'idle', 'tap wakes -> idle'); }
 { const s = S0(); step(s, { type: 'speaker' }); ok(s.mode === 'dance', 'speaker -> dance'); ok(step(s, { type: 'danceStep' })?.loop, 'dance step loops');
@@ -54,12 +55,14 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'arm' })?.sfx === 'arm', 'arm -> arm.mp3'); }
 { const s = S0(); const a = step(s, { type: 'ball' }); ok(a?.sfx === 'ball' && a.fx === 'kickBall' && settle(s) === 'idle', 'ball reaches Robo -> kick + ball.mp3 -> idle');
   step(s, { type: 'speaker' }); ok(step(s, { type: 'ball' }) === null, 'ball ignored while dancing'); }
+{ const s = S0(); const a = step(s, { type: 'bubbles' }); ok(a?.sfx === 'bubbles' && a.fx === 'bubbles' && settle(s) === 'idle', 'bubble bottle -> bubbles + bubbles.mp3 -> idle');
+  step(s, { type: 'bed' }); ok(step(s, { type: 'bubbles' }) === null, 'no bubbles while asleep'); }
 { const s = S0(); ok(step(s, { type: 'feed', food: 'apple' })?.sfx === 'feed', 'feed -> feed.mp3'); }
 { const s = S0(); for (let i = 0; i < 4; i++) step(s, { type: 'tap', zone: 'belly' }, i * 100); ok(step(s, { type: 'clipDone' })?.sfx === 'yay', 'get up after a fall -> yay.mp3'); }
 { const s = S0(); step(s, { type: 'speaker' }); ok(step(s, { type: 'speaker' })?.sfx === 'yay', 'dance end -> yay.mp3'); }
 { // a parent voice line never gets a phrase on top
   const acts = [];
-  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp', 'rocket', 'ball']) acts.push(step(S0(), { type: ev }));
+  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp', 'rocket', 'ball', 'bubbles']) acts.push(step(S0(), { type: ev }));
   for (let i = 0; i < 40; i++) { const s = S0(); step(s, { type: 'speaker' }); acts.push(step(s, { type: 'danceStep' })); }
   acts.push(step(S0(), { type: 'feed', food: 'milk' }));
   for (const zone of Object.keys(REACT)) acts.push(step(S0(), { type: 'tap', zone }));

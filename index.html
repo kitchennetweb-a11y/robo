@@ -107,8 +107,43 @@ const stripes = Object.assign(document.createElement('canvas'), { width: 128, he
 ['#e8454a', '#ffd23f', '#3fa7ff', '#ffffff'].forEach((c, i) => { sc.fillStyle = c; sc.fillRect(i * 32, 0, 32, 64); });
 const ball = new THREE.Mesh(new THREE.SphereGeometry(BALL_R, 24, 16),
   new THREE.MeshStandardMaterial({ map: Object.assign(new THREE.CanvasTexture(stripes), { colorSpace: THREE.SRGBColorSpace }), roughness: .4 }));
-ball.position.set(-.75, BALL_R, .55); ball.castShadow = true; ball.userData.hit = 'ball'; scene.add(ball); props.push(ball);
-const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }, { x: .8, z: .5, r: .12 }];  // Robo, rocket toy
+ball.position.set(-.4, BALL_R, .8); ball.castShadow = true; ball.userData.hit = 'ball'; scene.add(ball); props.push(ball);
+// bubble bottle: tap it for a stream of bubbles the child can pop
+const BOTTLE = new THREE.Vector3(-1, 0, -.2), bottle = new THREE.Group(); bottle.position.copy(BOTTLE); scene.add(bottle);
+for (const [geo, color, y] of [[new THREE.CylinderGeometry(.05, .055, .15, 20), 0xff8fc8, .075], [new THREE.CylinderGeometry(.03, .03, .04, 16), 0x9a6bff, .17],
+  [new THREE.CylinderGeometry(.005, .005, .12, 6), 0x9a6bff, .25], [new THREE.TorusGeometry(.035, .007, 8, 24), 0x9a6bff, .33]]) {
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: .4 }));
+  m.position.y = y; m.castShadow = true; m.userData.hit = 'bubbles'; bottle.add(m); props.push(m);
+}
+const bubbles = [], bubbleGeo = new THREE.SphereGeometry(1, 20, 14);
+const bubbleMat = new THREE.MeshPhysicalMaterial({ color: 0xcfefff, transparent: true, opacity: .35, roughness: 0, iridescence: 1, iridescenceIOR: 1.3, emissive: 0x335566, depthWrite: false });
+function blowBubbles() {
+  for (let i = 0; i < 16; i++) setTimeout(() => {
+    const b = new THREE.Mesh(bubbleGeo, bubbleMat.clone()), size = .035 + Math.random() * .045;
+    b.scale.setScalar(size); b.position.set(BOTTLE.x, .34, BOTTLE.z); b.material.color.setHSL(Math.random(), .8, .82);  // pastel tint
+    b.userData = { size, t0: performance.now(), life: 7000 + Math.random() * 4000, ph: Math.random() * 6,
+      v: new THREE.Vector3(.1 + Math.random() * .2, .04 + Math.random() * .07, (Math.random() - .5) * .2) };  // slow rise: stays tappable
+    scene.add(b); bubbles.push(b);
+  }, i * 180);
+}
+function popBubble(b, sound = true) {
+  scene.remove(b); b.material.dispose(); bubbles.splice(bubbles.indexOf(b), 1);
+  if (!sound) return;
+  tone('sine', 900 + Math.random() * 400, 2200, .07, .25, 9000);
+  for (let i = 0; i < 4; i++) puff(b.position, 0xffffff, new THREE.Vector3((Math.random() - .5) * .6, (Math.random() - .5) * .6, (Math.random() - .5) * .6), 300);
+}
+const headPos = new THREE.Vector3(), bodyPos = new THREE.Vector3();
+function stepBubbles(dt, now) {
+  head.getWorldPosition(headPos); body.getWorldPosition(bodyPos);
+  for (const b of [...bubbles]) {
+    const u = b.userData, age = (now - u.t0) / 1000;
+    b.position.addScaledVector(u.v, dt); b.position.x += Math.sin(age * 1.7 + u.ph) * .1 * dt;  // float and sway
+    b.scale.set(u.size * (1 + .06 * Math.sin(age * 6 + u.ph)), u.size * (1 - .06 * Math.sin(age * 6 + u.ph)), u.size);
+    if (b.position.distanceTo(headPos) < .25 + u.size || b.position.distanceTo(bodyPos) < .2) popBubble(b);  // floated into Robo
+    else if (now - u.t0 > u.life || b.position.y > 2.4) popBubble(b, false);
+  }
+}
+const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }, { x: .8, z: .5, r: .12 }, { x: BOTTLE.x, z: BOTTLE.z, r: .08 }];  // Robo, rocket, bottle
 let kickCool = 0;
 function stepBall(dt, now) {
   ball.position.addScaledVector(ballV, dt); ballV.multiplyScalar(Math.max(0, 1 - 1.2 * dt));
@@ -187,7 +222,7 @@ function playBuf(b, rate = 1, robot = false) {  // robot: voice.js vocoder, matc
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + dur * 1000 + 400);
   return dur * 1000;
 }
-for (const n of ['antenna', 'arm', 'ball', 'belly', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
+for (const n of ['antenna', 'arm', 'ball', 'belly', 'bubbles', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
 const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
@@ -246,7 +281,7 @@ function zzz() {
   document.body.append(z); setTimeout(() => z.remove(), 2700);
 }
 const FX = {
-  fart,
+  fart, bubbles: blowBubbles,
   music: () => music(true), musicOff: () => music(false),
   flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
   kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 2.1; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // back toward the child
@@ -290,6 +325,10 @@ function floorAt(x, y) { ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 
 r.domElement.addEventListener('pointerdown', e => {
   unlock(); down = { x: e.clientX, y: e.clientY };
   look.set((e.clientX / innerWidth - .5) * 1.0, (e.clientY / innerHeight - .5) * .6);
+  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, cam);
+  const gap = b => ray.ray.distanceToPoint(b.position) - b.userData.size;  // closest bubble to the finger, generous reach
+  const bub = bubbles.filter(b => gap(b) < .07).sort((a, b) => gap(a) - gap(b))[0];
+  if (bub) { popBubble(bub); down = null; return; }
   if (hitAt(e.clientX, e.clientY)?.object === ball) { drag = { t: performance.now(), moved: 0, v: new THREE.Vector3() }; ballV.set(0, 0, 0); }
 });
 addEventListener('pointermove', e => {
@@ -309,7 +348,7 @@ r.domElement.addEventListener('pointerup', e => {
   const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
   let z = h.object.userData.hit;
-  if (z === 'bed' || z === 'speaker' || z === 'rocket') return dispatch({ type: z });
+  if (['bed', 'speaker', 'rocket', 'bubbles'].includes(z)) return dispatch({ type: z });  // room toys
   if (dy < -80) return dispatch({ type: 'swipeUp' });
   if ((z === 'head' || z === 'antenna') && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) return dispatch({ type: 'headSwipe' });
   const hp = new THREE.Vector3(); head.getWorldPosition(hp);
@@ -396,6 +435,8 @@ r.setAnimationLoop(() => {
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
   if (!drag) stepBall(dt, now);
+  stepBubbles(dt, now);
+  if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
   if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
   head.quaternion.multiply(lookQ.setFromEuler(lookE.set(lookNow.y, lookNow.x, 0)));
@@ -422,7 +463,7 @@ r.setAnimationLoop(() => {
 });
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, ball, ballV, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, ball, ballV, bubbles, cam, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>

@@ -53,7 +53,9 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - Voice DONE: 104 phrases in `audio/` (voice 8Ebkg5uUcbSbeqGucAoR, eleven_v3), deployed. App adds a ring-mod robot effect to them + talk-back (`ROBOT_HZ`/`ROBOT_DRY` in index.html) to match the parent's ElevenLabs "Robot" filter on sfx/. To redo one phrase: delete `audio/<id>.mp3`, run gen-audio.mjs, commit.
 - Robot voice v2 (`voice.js`): channel vocoder on a fixed 129 Hz buzz — measured from the parent's ElevenLabs Robot lines with `blender/voice_analysis.py` (their pitch is locked at 129 Hz; a ring modulator sounded "too fuzzy"). Phase-scattered harmonics keep it smooth and unclipped. test.html renders it offline and checks pitch lock, no clipping, loudness vs sfx/hi.mp3.
 - Ball toy DONE: striped ball, tap = roll to Robo, flick = throw; friction, wall/rocket bounces; reaching idle Robo → FootPoke kick back toward the child + ball.mp3. Robo's head follows the rolling ball.
-**Next: iPad testing with the child. bubbles/peek sounds still waiting for toys.**
+- Bubbles toy DONE: pink bottle with wand by the bed; tap → Robo hops (star eyes) + bubbles.mp3, 16 pastel bubbles float slowly toward Robo; tap a bubble (generous reach) to pop it (synth pop + splash); bubbles touching Robo pop; Robo's head follows them. Ball moved to front-centre (-.4, .8) so it doesn't hide the bottle.
+- Fixed: tapping an unknown zone could leave Robo stuck in 'react' (game.js now ignores it; tested).
+**Next: iPad testing with the child. peek.mp3 still waiting for a toy.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".
