@@ -154,10 +154,20 @@ for (const [rad, h, color] of [[.09, .45, 0xff6a00], [.05, .3, 0xffe066]]) {
 const ac = new (window.AudioContext || window.webkitAudioContext)();
 const bufs = {}; let audioBusyUntil = 0;
 const loadBuf = async u => { const res = await fetch(u); if (!res.ok) throw res.status; return ac.decodeAudioData(await res.arrayBuffer()); };
-function playBuf(b, rate = 1) {
-  const s = ac.createBufferSource(); s.buffer = b; s.playbackRate.value = rate; s.connect(ac.destination); s.start();
-  audioBusyUntil = Math.max(audioBusyUntil, performance.now() + b.duration / rate * 1000 + 400);
-  return b.duration / rate * 1000;
+// Robot voice = ring modulator (voice x low sine) mixed with some dry voice, to match the parent's ElevenLabs "Robot" filter.
+// ponytail: ROBOT_HZ / ROBOT_DRY are by-ear knobs; compare against sfx/hi.mp3 on the iPad and nudge.
+const ROBOT_HZ = 50, ROBOT_DRY = .45;
+function playBuf(b, rate = 1, robot = false) {
+  const s = ac.createBufferSource(), dur = b.duration / rate; s.buffer = b; s.playbackRate.value = rate;
+  if (robot) {
+    const ring = ac.createGain(), dry = ac.createGain(), o = ac.createOscillator();
+    ring.gain.value = 0; o.frequency.value = ROBOT_HZ; o.connect(ring.gain); dry.gain.value = ROBOT_DRY;
+    s.connect(ring).connect(ac.destination); s.connect(dry).connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + dur + .1);
+  } else s.connect(ac.destination);
+  s.start();
+  audioBusyUntil = Math.max(audioBusyUntil, performance.now() + dur * 1000 + 400);
+  return dur * 1000;
 }
 for (const n of ['antenna', 'arm', 'belly', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
@@ -169,7 +179,7 @@ async function say(id) {
   const p = PH[id]; if (!p) return;
   stats.words[id] = (stats.words[id] || 0) + 1; save();
   if (bufs[id] === undefined) bufs[id] = await loadBuf(`audio/${id}.mp3`).catch(() => null);
-  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id]); return; }
+  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id], 1, true); return; }
   // ponytail: no ElevenLabs file yet -> device Persian voice if it has one, otherwise just the mouth moves
   if (faVoice) { const u = new SpeechSynthesisUtterance(p.fa); u.voice = faVoice; u.lang = faVoice.lang; speechSynthesis.speak(u); }
   talkUntil = performance.now() + 350 * p.fa.split(/\s+/).length + 300;
@@ -321,7 +331,7 @@ function listen(now) {
 async function playBack() {
   const b = await ac.decodeAudioData(await new Blob(chunks, { type: recMime }).arrayBuffer()).catch(() => null);
   if (!b || b.duration < .3) return;
-  face = 'joy'; talkUntil = performance.now() + playBuf(b, 1.45);
+  face = 'joy'; talkUntil = performance.now() + playBuf(b, 1.45, true);
   stats.spoken++; save();
 }
 

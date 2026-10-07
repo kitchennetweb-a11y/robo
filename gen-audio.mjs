@@ -1,9 +1,10 @@
 // Generate audio/<id>.mp3 for every line in phrases.json with ElevenLabs. Skips files that already exist.
-// PowerShell:  $env:ELEVENLABS_API_KEY="..."; $env:ELEVENLABS_VOICE_ID="..."; node gen-audio.mjs
-// Optional: ELEVENLABS_MODEL (default eleven_v3, which speaks Persian).
+// PowerShell:  $env:ELEVENLABS_API_KEY="..."; node gen-audio.mjs
+// Voice defaults to Robo's voice (same one as sfx/). The robot filter is applied by the app at playback, not here.
+// Optional: ELEVENLABS_VOICE_ID, ELEVENLABS_MODEL (default eleven_v3, which speaks Persian).
 import fs from 'node:fs';
-const { ELEVENLABS_API_KEY: key, ELEVENLABS_VOICE_ID: voice, ELEVENLABS_MODEL: model = 'eleven_v3' } = process.env;
-if (!key || !voice) { console.error('Set ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID first.'); process.exit(1); }
+const { ELEVENLABS_API_KEY: key, ELEVENLABS_VOICE_ID: voice = '8Ebkg5uUcbSbeqGucAoR', ELEVENLABS_MODEL: model = 'eleven_v3' } = process.env;
+if (!key) { console.error('Set ELEVENLABS_API_KEY first.'); process.exit(1); }
 fs.mkdirSync('audio', { recursive: true });
 for (const p of JSON.parse(fs.readFileSync('phrases.json', 'utf8'))) {
   const file = `audio/${p.id}.mp3`;
