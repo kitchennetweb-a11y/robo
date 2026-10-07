@@ -50,7 +50,8 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - `sfx/*.mp3` are the parent's own ElevenLabs voice lines (same voice). Rule: when one plays, no phrase is said on top. Mapping: hi=greet+hand tap (Wave), wake, sleep=bed, fly=swipe up (only sound), head=head swipe (HeadWobble, woozy face), bored=no touch for 2 min, face/belly/feet/antenna=those taps, dance=dance start. arm=upper/forearm tap (ThumbsUp), feed=food dropped on Robo, jump=jump dance step, yay=get-up after a fall + dance end, listen=👂 turned on, rocket=toy rocket. ball/bubbles/peek copied, not used yet (future toys). Head *tap* uses ElevenLabs phrases.
 - Rocket DONE: tap toy rocket → RocketLaunch (crouch, booster flames + smoke + camera shake, out of view) → RocketLand. Flames are two additive cones on DEF-Body in index.html.
 - Browser pane runs ~5 fps in the background, so animations look slow there; use `robo.pose(clip, t)` in the console to check frames.
-**Next: ElevenLabs phrases with the same voice ID (`node gen-audio.mjs`), iPad testing.**
+- Voice DONE: 104 phrases in `audio/` (voice 8Ebkg5uUcbSbeqGucAoR, eleven_v3), deployed. App adds a ring-mod robot effect to them + talk-back (`ROBOT_HZ`/`ROBOT_DRY` in index.html) to match the parent's ElevenLabs "Robot" filter on sfx/. To redo one phrase: delete `audio/<id>.mp3`, run gen-audio.mjs, commit.
+**Next: iPad testing with the child; tune robot effect, mic gate, tap zones from feedback. Future toys: ball/bubbles/peek sounds are waiting in sfx/.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".
