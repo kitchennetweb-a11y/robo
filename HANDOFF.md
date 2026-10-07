@@ -46,7 +46,8 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - Controls: tap zones head/face(screen)/belly/foot/hand/antenna; 4 taps in 2 s = random fall + matching get-up; swipe up = Fly 3.5 s; drag food = Eat (3 in a minute = fart); speaker = dance 24 s; bed = sleep (tap to wake); 👂 = talk-back; idle 30–60 s = random silly; hold top-left 3 s = parent panel.
 - No Persian system voice on iPad: until `node gen-audio.mjs` runs, phrases only animate the mouth (still counted in stats).
 - Mic gate `TH = .04` in index.html — tune on the real iPad.
-**Next: step 12 deploy (needs the user's go-ahead: public repo exposes robo.glb + face PNGs from the Robotz pack).**
+- Step 12 DONE: public repo https://github.com/kitchennetweb-a11y/robo, live at https://kitchennetweb-a11y.github.io/robo/ (live test.html ALL PASS). SSH push is not set up on this PC; push with `git -c "credential.helper=!gh auth git-credential" push` (or run `gh auth setup-git` once). Bump `V` in sw.js on every deploy.
+**Next: user tests on the iPad; run gen-audio.mjs once an ElevenLabs voice is picked.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".
