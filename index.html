@@ -88,6 +88,17 @@ for (const [y, rad] of [[.44, .1], [.2, .07]]) {
   const c = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, .02, 24), new THREE.MeshStandardMaterial({ color: 0x2a2d3f }));
   c.rotation.x = Math.PI / 2; c.position.set(1.65, y, -.52); c.userData.hit = 'speaker'; scene.add(c); props.push(c);
 }
+// toy rocket on the floor: tap it and Robo blasts off
+const rocketToy = new THREE.Group(); rocketToy.position.set(.8, 0, .5); rocketToy.rotation.y = -.4; scene.add(rocketToy);
+function part(geo, color, x, y, z) {
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: .5 }));
+  m.position.set(x, y, z); m.castShadow = true; m.userData.hit = 'rocket'; rocketToy.add(m); props.push(m); return m;
+}
+part(new THREE.CylinderGeometry(.06, .06, .26, 16), 0xffffff, 0, .17, 0);
+part(new THREE.ConeGeometry(.06, .12, 16), 0xe8454a, 0, .36, 0);
+part(new THREE.SphereGeometry(.025, 12, 8), 0x6fc3ff, 0, .22, .055);
+for (let i = 0, a = 0; i < 3; i++, a += Math.PI * 2 / 3)  // fins
+  part(new THREE.BoxGeometry(.02, .1, .07), 0xe8454a, Math.sin(a) * .06, .07, Math.cos(a) * .06).rotation.y = a;
 
 // ---------- robot ----------
 const gltf = await new GLTFLoader().loadAsync('robo.glb');
@@ -129,6 +140,15 @@ function zone(boneName, hit, y, rad) {
 }
 zone('DEF-Head', 'head', .15, .21); zone('DEF-Body', 'belly', .24, .15); zone('DEF-Body', 'foot', .06, .12);
 zone('Antenna_Spring', 'antenna', .17, .09); zone('DEF-handL', 'hand', .03, .08); zone('DEF-handR', 'hand', .03, .08);
+for (const s of 'LR') { zone(`DEF-upper_arm${s}`, 'arm', .06, .06); zone(`DEF-forearm${s}`, 'arm', .05, .055); }
+
+// rocket booster: two additive flame cones under the body, only lit while rocketing
+const flame = new THREE.Group(); flame.visible = false; flame.position.y = .02; body.add(flame);
+for (const [rad, h, color] of [[.09, .45, 0xff6a00], [.05, .3, 0xffe066]]) {
+  const m = new THREE.Mesh(new THREE.ConeGeometry(rad, h, 16, 1, true),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: .85, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  m.rotation.x = Math.PI; m.position.y = -h / 2; flame.add(m);
+}
 
 // ---------- audio ----------
 const ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -139,7 +159,7 @@ function playBuf(b, rate = 1) {
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + b.duration / rate * 1000 + 400);
   return b.duration / rate * 1000;
 }
-for (const n of ['antenna', 'belly', 'bored', 'dance', 'face', 'feet', 'fly', 'head', 'hi', 'sleep', 'wake'])
+for (const n of ['antenna', 'arm', 'belly', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
 const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
@@ -181,15 +201,15 @@ function music(on) {
 }
 
 // ---------- effects ----------
-const puffs = [];
+const puffs = [], puffGeo = new THREE.SphereGeometry(.06, 10, 8);
+function puff(pos, color, v, life) {  // soft ball that drifts, grows and fades (fart cloud, rocket smoke)
+  const m = new THREE.Mesh(puffGeo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: .5, depthWrite: false }));
+  m.position.copy(pos); m.userData = { v, life, t0: performance.now() }; scene.add(m); puffs.push(m);
+}
 function fart() {
   tone('sawtooth', 95, 45, .75, .7, 600, 25);
-  for (let i = 0; i < 8; i++) {
-    const m = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), new THREE.MeshBasicMaterial({ color: 0x9bd36a, transparent: true, opacity: .5 }));
-    m.position.set((Math.random() - .5) * .2, .12 + Math.random() * .1, -.22);
-    m.userData = { v: new THREE.Vector3((Math.random() - .5) * .4, .2 + Math.random() * .25, -.25), t0: performance.now() };
-    scene.add(m); puffs.push(m);
-  }
+  for (let i = 0; i < 8; i++) puff(new THREE.Vector3((Math.random() - .5) * .2, .12 + Math.random() * .1, -.22), 0x9bd36a,
+    new THREE.Vector3((Math.random() - .5) * .4, .2 + Math.random() * .25, -.25), 1300);
 }
 function zzz() {
   const p = new THREE.Vector3(); head.getWorldPosition(p); p.y += .35; p.project(cam);
@@ -243,7 +263,7 @@ r.domElement.addEventListener('pointerup', e => {
   const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
   let z = h.object.userData.hit;
-  if (z === 'bed' || z === 'speaker') return dispatch({ type: z });
+  if (z === 'bed' || z === 'speaker' || z === 'rocket') return dispatch({ type: z });
   if (dy < -80) return dispatch({ type: 'swipeUp' });
   if ((z === 'head' || z === 'antenna') && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) return dispatch({ type: 'headSwipe' });
   const hp = new THREE.Vector3(); head.getWorldPosition(hp);
@@ -281,7 +301,7 @@ $('ear').onclick = async () => {
   if (mic) { mic.getTracks().forEach(t => t.stop()); mic = null; $('ear').classList.remove('on'); return; }
   try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); } catch { return; }
   an = ac.createAnalyser(); an.fftSize = 1024; td = new Float32Array(1024);
-  ac.createMediaStreamSource(mic).connect(an); $('ear').classList.add('on');
+  ac.createMediaStreamSource(mic).connect(an); $('ear').classList.add('on'); sfx('listen');
 };
 function listen(now) {
   if (!mic || st.mode === 'sleep') return;
@@ -332,9 +352,17 @@ r.setAnimationLoop(() => {
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
   head.quaternion.multiply(lookQ.setFromEuler(lookE.set(lookNow.y, lookNow.x, 0)));
   applyFace(now);
+  const clipName = cur?.getClip().name, bp = body.getWorldPosition(new THREE.Vector3());
+  flame.visible = (clipName === 'RocketLaunch' && cur.time > .35) || (clipName === 'RocketLand' && bp.y > .05);
+  cam.position.x = 0;
+  if (flame.visible) {
+    flame.scale.set(.85 + Math.random() * .3, .75 + Math.random() * .5, .85 + Math.random() * .3);
+    cam.position.x = (Math.random() - .5) * .015;  // light shake
+    if (Math.random() < .6) puff(bp.clone().setY(bp.y - .2), 0xcfcfcf, new THREE.Vector3((Math.random() - .5) * .8, -.2, (Math.random() - .5) * .8), 1000);
+  }
   for (let i = puffs.length - 1; i >= 0; i--) {
-    const m = puffs[i], age = (now - m.userData.t0) / 1300;
-    if (age > 1) { scene.remove(m); puffs.splice(i, 1); continue; }
+    const m = puffs[i], age = (now - m.userData.t0) / m.userData.life;
+    if (age > 1) { scene.remove(m); m.material.dispose(); puffs.splice(i, 1); continue; }
     m.position.addScaledVector(m.userData.v, dt); m.scale.setScalar(1 + age * 3); m.material.opacity = .5 * (1 - age);
   }
   listen(now);
@@ -346,7 +374,7 @@ r.setAnimationLoop(() => {
 });
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>

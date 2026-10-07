@@ -47,8 +47,10 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - No Persian system voice on iPad: until `node gen-audio.mjs` runs, phrases only animate the mouth (still counted in stats).
 - Mic gate `TH = .04` in index.html — tune on the real iPad.
 - Step 12 DONE: public repo https://github.com/kitchennetweb-a11y/robo, live at https://kitchennetweb-a11y.github.io/robo/ (live test.html ALL PASS). SSH push is not set up on this PC; push with `git -c "credential.helper=!gh auth git-credential" push` (or run `gh auth setup-git` once). Bump `V` in sw.js on every deploy.
-- `sfx/*.mp3` are the parent's own ElevenLabs voice lines (same voice). Rule: when one plays, no phrase is said on top. Mapping: hi=greet+hand tap (Wave), wake, sleep=bed, fly=swipe up (only sound), head=head swipe (HeadWobble, woozy face), bored=no touch for 2 min, face/belly/feet/antenna=those taps, dance=dance start. rocket.mp3 reserved for the Rocket feature (plan Phase C). Head *tap* uses ElevenLabs phrases.
-**Next: ElevenLabs phrases with the same voice ID (`node gen-audio.mjs`), iPad testing, then Phase C Rocket (see plan).**
+- `sfx/*.mp3` are the parent's own ElevenLabs voice lines (same voice). Rule: when one plays, no phrase is said on top. Mapping: hi=greet+hand tap (Wave), wake, sleep=bed, fly=swipe up (only sound), head=head swipe (HeadWobble, woozy face), bored=no touch for 2 min, face/belly/feet/antenna=those taps, dance=dance start. arm=upper/forearm tap (ThumbsUp), feed=food dropped on Robo, jump=jump dance step, yay=get-up after a fall + dance end, listen=👂 turned on, rocket=toy rocket. ball/bubbles/peek copied, not used yet (future toys). Head *tap* uses ElevenLabs phrases.
+- Rocket DONE: tap toy rocket → RocketLaunch (crouch, booster flames + smoke + camera shake, out of view) → RocketLand. Flames are two additive cones on DEF-Body in index.html.
+- Browser pane runs ~5 fps in the background, so animations look slow there; use `robo.pose(clip, t)` in the console to check frames.
+**Next: ElevenLabs phrases with the same voice ID (`node gen-audio.mjs`), iPad testing.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".

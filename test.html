@@ -13,18 +13,18 @@ const ph = await (await fetch('phrases.json')).json(), ids = new Set(ph.map(p =>
 ok(ids.size === ph.length, `phrase ids unique (${ph.length})`);
 ok(ph.every(p => p.id && p.fa && p.en && p.cat), 'every phrase has id/fa/en/cat');
 const refs = [...Object.values(SAYS).flat(), ...Object.values(REACT).flatMap(r => r.say || []), ...Object.values(FOOD).flatMap(f => f.say),
-  ...DANCES.map(d => d[1]), ...SILLY.flatMap(s => s.say)];
+  ...DANCES.map(d => d[1]).filter(Boolean), ...SILLY.flatMap(s => s.say)];
 const missing = refs.filter(r => !ids.has(r)); ok(!missing.length, 'every reaction says a known phrase ' + missing);
 
 // clips exist in robo.glb, faces exist in face/, sfx exist
 const anims = new Set((await new GLTFLoader().loadAsync('robo.glb')).animations.map(a => a.name));
-const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
+const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', 'RocketLaunch', 'RocketLand', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
 const noClip = clips.filter(c => !anims.has(c)); ok(!noClip.length, 'every clip is in robo.glb ' + noClip);
 const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A', 'mouth_O'))];
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
 ok(!noTex.length, 'every face texture exists ' + noTex);
 const faceRefs = [...Object.values(REACT), ...SILLY].map(r => r.face); ok(faceRefs.every(f => FACES[f]), 'every face name is defined');
-const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
+const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
 const noSfx = (await Promise.all(sfx.map(async n => (await fetch(`sfx/${n}.mp3`, { method: 'HEAD' })).ok ? null : n))).filter(Boolean);
 ok(!noSfx.length, 'every sfx exists ' + noSfx);
 
@@ -48,9 +48,17 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); const a = step(s, { type: 'tap', zone: 'hand' }); ok(a?.sfx === 'hi', 'hand -> hi.mp3'); }
 { const s = S0(); const a = step(s, { type: 'swipeUp' }), b = step(s, { type: 'flyEnd' }); ok(a.sfx === 'fly' && !a.say && !b.sfx && !b.say, 'flying is only fly.mp3'); }
 { const s = S0(); ok(step(s, { type: 'bed' })?.sfx === 'sleep', 'bed -> sleep.mp3'); }
+{ const s = S0(); const a = step(s, { type: 'rocket' }), b = step(s, { type: 'clipDone' });
+  ok(a?.clip === 'RocketLaunch' && a.sfx === 'rocket' && b?.clip === 'RocketLand' && b.delay > 0 && settle(s) === 'idle', 'rocket toy -> launch -> land -> idle'); }
+{ const s = S0(); ok(step(s, { type: 'tap', zone: 'arm' })?.sfx === 'arm', 'arm -> arm.mp3'); }
+{ const s = S0(); ok(step(s, { type: 'feed', food: 'apple' })?.sfx === 'feed', 'feed -> feed.mp3'); }
+{ const s = S0(); for (let i = 0; i < 4; i++) step(s, { type: 'tap', zone: 'belly' }, i * 100); ok(step(s, { type: 'clipDone' })?.sfx === 'yay', 'get up after a fall -> yay.mp3'); }
+{ const s = S0(); step(s, { type: 'speaker' }); ok(step(s, { type: 'speaker' })?.sfx === 'yay', 'dance end -> yay.mp3'); }
 { // a parent voice line never gets a phrase on top
   const acts = [];
-  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp']) acts.push(step(S0(), { type: ev }));
+  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp', 'rocket']) acts.push(step(S0(), { type: ev }));
+  for (let i = 0; i < 40; i++) { const s = S0(); step(s, { type: 'speaker' }); acts.push(step(s, { type: 'danceStep' })); }
+  acts.push(step(S0(), { type: 'feed', food: 'milk' }));
   for (const zone of Object.keys(REACT)) acts.push(step(S0(), { type: 'tap', zone }));
   for (let i = 0; i < 40; i++) acts.push(step(S0(), { type: 'bored' }));
   const both = acts.filter(a => a?.sfx && a.say); ok(!both.length, 'no voice line + phrase together ' + both.map(a => a.clip)); }

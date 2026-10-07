@@ -28,6 +28,15 @@ def hop(u, h=.18, arms=40):
     j = bump(u, .15, .85); q = bump(u, 0, .15) + bump(u, .85, 1)
     return dict(loc=(0, 0, h * j), scale=(1 + .06 * q - .03 * j, 1 + .06 * q - .03 * j, 1 - .12 * q + .06 * j),
                 armL=(6 + arms * j, 0), armR=(6 + arms * j, 0))
+ROCKET_H = 3.2  # high enough to leave the top of the web app's camera view
+def rocket_launch(u):  # crouch, ignite, accelerate straight up out of view
+    q = bump(u, 0, .4); up = max(0.0, (u - .35) / .65)
+    return dict(loc=(0, 0, ROCKET_H * up ** 2), scale=(1 + .08 * q, 1 + .08 * q, 1 - .15 * q),
+                head=(10 * q - 6 * (up > 0), 0, 0), armL=(6 - 4 * min(up * 5, 1), 0), armR=(6 - 4 * min(up * 5, 1), 0))
+def rocket_land(u):  # come down slowing like a lander, squash on touchdown, wobble
+    d = min(u / .6, 1.0); q = bump(u, .58, .8)
+    return dict(loc=(0, 0, ROCKET_H * (1 - d) ** 2 + .04 * bump(u, .8, .95)), scale=(1 + .08 * q, 1 + .08 * q, 1 - .15 * q),
+                rot=(0, 4 * damp(max(u - .6, 0), 3, 6), 0), armL=(6 + 25 * (1 - d), 0), armR=(6 + 25 * (1 - d), 0))
 def head_wobble(u):  # little dizzy after the head is swiped: head circles, fading out
     a, k = 2 * pi * 2.5 * u, (1 - u) ** 1.5
     return dict(head=(9 * sin(a) * k, 12 * cos(a) * k, 6 * sin(a / 2) * k), rot=(0, 3 * sin(a + 1) * k, 0),
@@ -94,7 +103,8 @@ def thumbs_up(u):
     return dict(armR=(70 * e, 10 * e + p), swingR=100 * e, twistR=e, curlR=e, thumbR=(20 * e, 0, 70 * e), head=(0, -6 * e, 0))
 
 CLIPS = {"Idle": (48, True, idle), "HeadPoke": (24, False, head_poke), "BellyPoke": (36, False, belly_poke),
-         "FootPoke": (24, False, hop), "Dizzy": (48, True, dizzy), "HeadWobble": (36, False, head_wobble), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
+         "FootPoke": (24, False, hop), "Dizzy": (48, True, dizzy), "HeadWobble": (36, False, head_wobble),
+         "RocketLaunch": (48, False, rocket_launch), "RocketLand": (40, False, rocket_land), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
          "FallBack": (30, False, lambda u: fall(u, "back")), "GetUpBack": (30, False, lambda u: get_up(u, "back")),
          "FallFront": (30, False, lambda u: fall(u, "front")), "GetUpFront": (30, False, lambda u: get_up(u, "front")),
          "FallApart": (48, False, fall_apart), "Reassemble": (48, False, reassemble),

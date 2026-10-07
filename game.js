@@ -12,8 +12,7 @@ export const FACES = {
 // sfx are the parent's own ElevenLabs voice lines: when one plays, Robo doesn't also say a phrase.
 
 export const SAYS = {
-  fall: ['oftadam', 'akh', 'vay', 'oh'], getup: ['pashodam', 'dobare'], full: ['ser_shodam', 'boo_mide'],
-  danceEnd: ['afarin', 'afarin_kheili_khoob'],
+  fall: ['oftadam', 'akh', 'vay', 'oh'], full: ['ser_shodam', 'boo_mide'],
 };
 
 export const REACT = {  // touch zone -> reaction
@@ -22,6 +21,7 @@ export const REACT = {  // touch zone -> reaction
   belly: { clip: 'BellyPoke', face: 'joy', sfx: 'belly' },
   foot: { clip: 'FootPoke', face: 'happy', sfx: 'feet' },
   hand: { clip: 'Wave', face: 'happy', sfx: 'hi' },
+  arm: { clip: 'ThumbsUp', face: 'happy', sfx: 'arm' },
   antenna: { clip: 'Dizzy', face: 'x', sfx: 'antenna' },
 };
 const HEAD_SWIPE = { clip: 'HeadWobble', face: 'woozy', sfx: 'head' };
@@ -36,7 +36,8 @@ export const FOOD = {
 };
 
 export const FALLS = [['Fall', 'GetUp'], ['FallBack', 'GetUpBack'], ['FallFront', 'GetUpFront'], ['FallApart', 'Reassemble']];
-export const DANCES = [['DanceWiggle', 'beraghs'], ['DanceSpin', 'becharkh'], ['DanceJump', 'bepar'], ['DanceJump', 'dast_bezan']];
+export const DANCES = [  // [clip, phrase, voice line]
+  ['DanceWiggle', 'beraghs'], ['DanceSpin', 'becharkh'], ['DanceJump', null, 'jump'], ['DanceJump', 'dast_bezan']];
 export const SILLY = [  // random thing to do when nobody has touched Robo for a while
   { clip: 'Fart', face: 'joy', fx: 'fart', say: ['oops', 'boo_mide', 'in_chi_bood'] },
   { clip: 'Sneeze', face: 'surprised', say: ['hapche', 'bebakhshid'] },
@@ -60,7 +61,7 @@ export function step(s, ev, now = Date.now()) {
       s.taps = s.taps.filter(t => now - t < 2000).concat(now);
       if (s.taps.length >= 4) {  // too many pokes: fall over, wait, get up
         const [fall, up] = pick(FALLS); s.taps = []; s.mode = 'react';
-        s.next = [{ clip: up, face: 'happy', say: pick(SAYS.getup), delay: 900 }];
+        s.next = [{ clip: up, face: 'happy', sfx: 'yay', delay: 900 }];
         return { clip: fall, face: 'x', say: pick(SAYS.fall) };
       }
       if (s.mode !== 'idle') return null;
@@ -69,7 +70,7 @@ export function step(s, ev, now = Date.now()) {
       if (!free) return null;
       s.fed = s.fed.filter(t => now - t < 60000).concat(now); s.mode = 'react'; s.next = [];
       if (s.fed.length >= 3) { s.fed = []; s.next = [{ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }]; }
-      return { clip: 'Eat', face: 'heart', say: pick(FOOD[ev.food].say) };
+      return { clip: 'Eat', face: 'heart', sfx: 'feed' };  // FOOD[].say is used when a food is tapped in the tray
     }
     case 'headSwipe':
       if (s.mode !== 'idle') return null;
@@ -85,13 +86,17 @@ export function step(s, ev, now = Date.now()) {
       if (!free) return null;
       s.mode = 'sleep'; s.next = []; return { clip: 'Sleep', loop: true, face: 'sleep', fx: 'night', sfx: 'sleep' };
     case 'speaker':
-      if (s.mode === 'dance') { s.mode = 'idle'; return { ...IDLE, face: 'happy', fx: 'musicOff', say: pick(SAYS.danceEnd) }; }
+      if (s.mode === 'dance') { s.mode = 'idle'; return { ...IDLE, face: 'happy', fx: 'musicOff', sfx: 'yay' }; }
       if (!free) return null;
       s.mode = 'dance'; s.next = []; return { clip: 'DanceWiggle', loop: true, face: 'star', fx: 'music', sfx: 'dance' };
     case 'danceStep': {
       if (s.mode !== 'dance') return null;
-      const [clip, say] = pick(DANCES); return { clip, loop: true, say };
+      const [clip, say, sfx] = pick(DANCES); return { clip, loop: true, say: say || undefined, sfx };
     }
+    case 'rocket':  // tap the toy rocket: blast off, wait off-screen, land
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; s.next = [{ clip: 'RocketLand', face: 'happy', delay: 700 }];
+      return { clip: 'RocketLaunch', face: 'star', sfx: 'rocket' };
     case 'swipeUp':
       if (!free) return null;
       s.mode = 'fly'; s.next = []; return { clip: 'Fly', loop: true, face: 'joy', sfx: 'fly', fx: 'flyTimer' };
