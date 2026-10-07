@@ -143,6 +143,25 @@ function stepBubbles(dt, now) {
     else if (now - u.t0 > u.life || b.position.y > 2.4) popBubble(b, false);
   }
 }
+// peekaboo blanket: folded on the floor; tap -> it drops over Robo; tap again (or wait) -> it flies off, Robo pops out
+const starsCv = Object.assign(document.createElement('canvas'), { width: 256, height: 128 }), stc = starsCv.getContext('2d');
+stc.fillStyle = '#7cc6ff'; stc.fillRect(0, 0, 256, 128); stc.fillStyle = '#fff3a6';
+for (let i = 0; i < 45; i++) { stc.beginPath(); stc.arc((i * 97) % 256, (i * 53) % 128, 5, 0, 7); stc.fill(); }
+const blanket = new THREE.Mesh(
+  new THREE.LatheGeometry([[.001, 1.02], [.16, 1], [.28, .92], [.34, .72], [.36, .4], [.39, .12], [.44, .02]].map(([x, y]) => new THREE.Vector2(x, y)), 32),
+  new THREE.MeshStandardMaterial({ map: Object.assign(new THREE.CanvasTexture(starsCv), { colorSpace: THREE.SRGBColorSpace }), side: THREE.DoubleSide, roughness: .9 }));
+blanket.castShadow = true; blanket.userData.hit = 'peek'; scene.add(blanket); props.push(blanket);
+const FOLDED = { p: new THREE.Vector3(-.55, 0, .1), s: new THREE.Vector3(.45, .1, .45) }, OVER = { p: new THREE.Vector3(), s: new THREE.Vector3(1, 1, 1) };
+blanket.position.copy(FOLDED.p); blanket.scale.copy(FOLDED.s);
+let blanketMove = null, peekTimer;
+function moveBlanket(to, dur) { blanketMove = { p: blanket.position.clone(), s: blanket.scale.clone(), to, t0: performance.now(), dur }; }
+function stepBlanket(now) {
+  if (!blanketMove) { if (st.mode === 'hide') blanket.scale.y = 1 + .025 * Math.sin(now / 300); return; }  // Robo "breathing" under it
+  const u = Math.min((now - blanketMove.t0) / blanketMove.dur, 1), e = u * u * (3 - 2 * u);
+  blanket.position.lerpVectors(blanketMove.p, blanketMove.to.p, e); blanket.position.y += Math.sin(Math.PI * u) * .7;  // arc through the air
+  blanket.scale.lerpVectors(blanketMove.s, blanketMove.to.s, e);
+  if (u >= 1) blanketMove = null;
+}
 const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }];  // rocket and bottle sit behind the ball's fence
 let kickCool = 0;
 function stepBall(dt, now) {
@@ -226,7 +245,7 @@ function playBuf(b, rate = 1, robot = false) {  // robot: voice.js vocoder, matc
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + dur * 1000 + 400);
   return dur * 1000;
 }
-for (const n of ['antenna', 'arm', 'ball', 'belly', 'bubbles', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
+for (const n of ['antenna', 'arm', 'ball', 'belly', 'bubbles', 'peek', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
 const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
@@ -286,6 +305,8 @@ function zzz() {
 }
 const FX = {
   fart, bubbles: blowBubbles,
+  blanketOn() { moveBlanket(OVER, 700); clearTimeout(peekTimer); peekTimer = setTimeout(() => dispatch({ type: 'peek' }), 7000); },
+  blanketOff() { clearTimeout(peekTimer); moveBlanket(FOLDED, 900); },
   music: () => music(true), musicOff: () => music(false),
   flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
   kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 1.2; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // straight back toward the screen (±35°)
@@ -339,7 +360,7 @@ r.domElement.addEventListener('pointerup', e => {
   const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
   let z = h.object.userData.hit;
-  if (['bed', 'speaker', 'rocket', 'bubbles'].includes(z)) return dispatch({ type: z });  // room toys
+  if (['bed', 'speaker', 'rocket', 'bubbles', 'peek'].includes(z)) return dispatch({ type: z });  // room toys
   if (dy < -80) return dispatch({ type: 'swipeUp' });
   if ((z === 'head' || z === 'antenna') && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) return dispatch({ type: 'headSwipe' });
   const hp = new THREE.Vector3(); head.getWorldPosition(hp);
@@ -426,7 +447,7 @@ r.setAnimationLoop(() => {
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
   stepBall(dt, now);
-  stepBubbles(dt, now);
+  stepBubbles(dt, now); stepBlanket(now);
   if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
   if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
@@ -454,7 +475,7 @@ r.setAnimationLoop(() => {
 });
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, ball, ballV, bubbles, cam, stepBall, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, ball, ballV, bubbles, cam, stepBall, blanket, stepBlanket, render: () => r.render(scene, cam), hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>

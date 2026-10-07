@@ -25,7 +25,7 @@ const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
 ok(!noTex.length, 'every face texture exists ' + noTex);
 const faceRefs = [...Object.values(REACT), ...SILLY].map(r => r.face); ok(faceRefs.every(f => FACES[f]), 'every face name is defined');
-const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', 'ball', 'bubbles', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
+const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', 'ball', 'bubbles', 'peek', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
 const noSfx = (await Promise.all(sfx.map(async n => (await fetch(`sfx/${n}.mp3`, { method: 'HEAD' })).ok ? null : n))).filter(Boolean);
 ok(!noSfx.length, 'every sfx exists ' + noSfx);
 
@@ -35,6 +35,10 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); let a; for (let i = 0; i < 4; i++) a = step(s, { type: 'tap', zone: 'head' }, i * 200);
   ok(FALLS.some(f => f[0] === a?.clip), `4 quick taps -> ${a?.clip}`); const up = step(s, { type: 'clipDone' });
   ok(FALLS.some(f => f[0] === a.clip && f[1] === up?.clip), `-> matching get-up ${up?.clip}`); ok(settle(s) === 'idle', '-> idle'); }
+{ const s = S0(); const a = step(s, { type: 'peek' }); ok(a?.fx === 'blanketOn' && s.mode === 'hide', 'blanket tap -> Robo hides under it');
+  ok(step(s, { type: 'speaker' }) === null && step(s, { type: 'bored' }) === null && s.mode === 'hide', 'other toys ignored while hiding');
+  const b = step(s, { type: 'peek' }); ok(b?.sfx === 'peek' && b.fx === 'blanketOff' && settle(s) === 'idle', 'blanket tap again -> peek.mp3, blanket off -> idle'); }
+{ const s = S0(); step(s, { type: 'peek' }); const b = step(s, { type: 'tap', zone: 'belly' }); ok(b?.sfx === 'peek' && settle(s) === 'idle', 'tapping hidden Robo also = peekaboo'); }
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'nope' }) === null && s.mode === 'idle', 'unknown tap zone is ignored, Robo not stuck'); }
 { const s = S0(); step(s, { type: 'tap', zone: 'head' }, 0); step(s, { type: 'tap', zone: 'head' }, 5000); ok(s.mode === 'react' && settle(s) === 'idle', 'slow taps do not fall'); }
 { const s = S0(); step(s, { type: 'bed' }); ok(s.mode === 'sleep', 'bed -> sleep'); ok(step(s, { type: 'tap', zone: 'belly' })?.fx === 'day' && settle(s) === 'idle', 'tap wakes -> idle'); }
@@ -66,6 +70,7 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
   for (let i = 0; i < 40; i++) { const s = S0(); step(s, { type: 'speaker' }); acts.push(step(s, { type: 'danceStep' })); }
   acts.push(step(S0(), { type: 'feed', food: 'milk' }));
   for (const zone of Object.keys(REACT)) acts.push(step(S0(), { type: 'tap', zone }));
+  { const s = S0(); step(s, { type: 'peek' }); acts.push(step(s, { type: 'peek' })); }
   for (let i = 0; i < 40; i++) acts.push(step(S0(), { type: 'bored' }));
   const both = acts.filter(a => a?.sfx && a.say); ok(!both.length, 'no voice line + phrase together ' + both.map(a => a.clip)); }
 

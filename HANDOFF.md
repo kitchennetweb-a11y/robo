@@ -56,7 +56,9 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - Ball simplified (user request): tap only (no drag/flick) → rolls to just in front of Robo → he kicks it back toward the screen (±35°). Ball is fenced to z ≥ .35 (in front of Robo) so it can never hide behind him; if Robo is busy it waits at his feet and gets kicked when he's free. Rocket toy moved to (.85, .1), behind the fence. Verified 10/10 start positions with `robo.stepBall` (console helper; works even when the pane is hidden and rAF is paused).
 - Bubbles toy DONE: pink bottle with wand by the bed; tap → Robo hops (star eyes) + bubbles.mp3, 16 pastel bubbles float slowly toward Robo; tap a bubble (generous reach) to pop it (synth pop + splash); bubbles touching Robo pop; Robo's head follows them. Ball moved to front-centre (-.4, .8) so it doesn't hide the bottle.
 - Fixed: tapping an unknown zone could leave Robo stuck in 'react' (game.js now ignores it; tested).
-**Next: iPad testing with the child. peek.mp3 still waiting for a toy.**
+- Peekaboo DONE: folded starry blanket on the floor left of Robo (-.55, .1). Tap → it arcs over and covers Robo (mode 'hide', blanket "breathes"); tap blanket or Robo (or wait 7 s) → it flies back folded, Robo does DanceJump (arms up) with joy face + peek.mp3. Other toys are ignored while hiding.
+- Console helpers: `robo.render()`, `robo.stepBlanket(t)`, `robo.stepBall(dt, t)` work even when the pane is hidden (rAF paused, screenshots time out).
+**Next: iPad testing with the child. All parent sounds are now wired.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".

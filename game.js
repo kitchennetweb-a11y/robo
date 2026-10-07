@@ -57,6 +57,7 @@ export function step(s, ev, now = Date.now()) {
       s.mode = 'react'; return { clip: 'Wave', face: 'happy', sfx: 'hi' };
     case 'tap':
       if (s.mode === 'sleep') return wake(s);
+      if (s.mode === 'hide') return step(s, { type: 'peek' }, now);  // tapping the hidden Robo = peekaboo!
       if (!free || !REACT[ev.zone]) return null;  // unknown zone: ignore rather than get stuck in 'react'
       s.taps = s.taps.filter(t => now - t < 2000).concat(now);
       if (s.taps.length >= 4) {  // too many pokes: fall over, wait, get up
@@ -99,6 +100,10 @@ export function step(s, ev, now = Date.now()) {
     case 'bubbles':  // tap the bubble bottle: excited hop while bubbles float up (the child pops them)
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; return { clip: 'FootPoke', face: 'star', sfx: 'bubbles', fx: 'bubbles' };
+    case 'peek':  // blanket: 1st tap hides Robo under it, 2nd tap (or a timer) whisks it off and he pops out
+      if (s.mode === 'hide') { s.mode = 'react'; return { clip: 'DanceJump', face: 'joy', sfx: 'peek', fx: 'blanketOff' }; }
+      if (s.mode !== 'idle') return null;
+      s.mode = 'hide'; return { clip: 'Idle', loop: true, face: 'normal', fx: 'blanketOn' };
     case 'rocket':  // tap the toy rocket: blast off, wait off-screen, land
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; s.next = [{ clip: 'RocketLand', face: 'happy', delay: 700 }];
