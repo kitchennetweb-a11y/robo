@@ -28,6 +28,10 @@ def hop(u, h=.18, arms=40):
     j = bump(u, .15, .85); q = bump(u, 0, .15) + bump(u, .85, 1)
     return dict(loc=(0, 0, h * j), scale=(1 + .06 * q - .03 * j, 1 + .06 * q - .03 * j, 1 - .12 * q + .06 * j),
                 armL=(6 + arms * j, 0), armR=(6 + arms * j, 0))
+def head_wobble(u):  # little dizzy after the head is swiped: head circles, fading out
+    a, k = 2 * pi * 2.5 * u, (1 - u) ** 1.5
+    return dict(head=(9 * sin(a) * k, 12 * cos(a) * k, 6 * sin(a / 2) * k), rot=(0, 3 * sin(a + 1) * k, 0),
+                armL=(6 + 12 * k, 0), armR=(6 + 12 * k, 0))
 def dizzy(u):
     a = 2 * pi * 2 * u
     return dict(rot=(8 * sin(a), 8 * cos(a), 0), head=(-10 * sin(a + .8), -10 * cos(a + .8), 15 * S(u)),
@@ -90,7 +94,7 @@ def thumbs_up(u):
     return dict(armR=(70 * e, 10 * e + p), swingR=100 * e, twistR=e, curlR=e, thumbR=(20 * e, 0, 70 * e), head=(0, -6 * e, 0))
 
 CLIPS = {"Idle": (48, True, idle), "HeadPoke": (24, False, head_poke), "BellyPoke": (36, False, belly_poke),
-         "FootPoke": (24, False, hop), "Dizzy": (48, True, dizzy), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
+         "FootPoke": (24, False, hop), "Dizzy": (48, True, dizzy), "HeadWobble": (36, False, head_wobble), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
          "FallBack": (30, False, lambda u: fall(u, "back")), "GetUpBack": (30, False, lambda u: get_up(u, "back")),
          "FallFront": (30, False, lambda u: fall(u, "front")), "GetUpFront": (30, False, lambda u: get_up(u, "front")),
          "FallApart": (48, False, fall_apart), "Reassemble": (48, False, reassemble),

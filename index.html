@@ -139,7 +139,7 @@ function playBuf(b, rate = 1) {
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + b.duration / rate * 1000 + 400);
   return b.duration / rate * 1000;
 }
-for (const n of ['antenna', 'belly', 'bored', 'dance', 'face', 'feet', 'fly', 'head', 'hi', 'rocket', 'wake'])
+for (const n of ['antenna', 'belly', 'bored', 'dance', 'face', 'feet', 'fly', 'head', 'hi', 'sleep', 'wake'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
 const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
@@ -224,7 +224,7 @@ function run(a) {
 
 // ---------- input ----------
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), look = new THREE.Vector2(), lookNow = new THREE.Vector2();
-let lastUser = performance.now(), boredAfter = 40000, greeted = false, down = null;
+let lastUser = performance.now(), lastSilly = 0, lastLonely = 0, boredAfter = 40000, greeted = false, down = null;
 function hitAt(x, y) {
   ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, cam);
   return ray.intersectObjects([...zones, ...props], false)[0];
@@ -240,11 +240,12 @@ r.domElement.addEventListener('pointerdown', e => {
 });
 r.domElement.addEventListener('pointerup', e => {
   if (!down) return;
-  const dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
+  const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
   let z = h.object.userData.hit;
   if (z === 'bed' || z === 'speaker') return dispatch({ type: z });
   if (dy < -80) return dispatch({ type: 'swipeUp' });
+  if ((z === 'head' || z === 'antenna') && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) return dispatch({ type: 'headSwipe' });
   const hp = new THREE.Vector3(); head.getWorldPosition(hp);
   if (z === 'head' && h.point.z > hp.z + .1 && h.point.y < hp.y + .25) z = 'face';  // front of the head = the screen face
   dispatch({ type: 'tap', zone: z });
@@ -337,7 +338,10 @@ r.setAnimationLoop(() => {
     m.position.addScaledVector(m.userData.v, dt); m.scale.setScalar(1 + age * 3); m.material.opacity = .5 * (1 - age);
   }
   listen(now);
-  if (st.mode === 'idle' && greeted && now - lastUser > boredAfter) { lastUser = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
+  if (st.mode === 'idle' && greeted) {  // no touches for 2 min -> bored.mp3; meanwhile a random silly every 30-60 s
+    if (now - Math.max(lastUser, lastLonely) > 120000) { lastLonely = now; dispatch({ type: 'lonely' }); }
+    else if (now - Math.max(lastUser, lastSilly) > boredAfter) { lastSilly = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
+  }
   r.render(scene, cam);
 });
 

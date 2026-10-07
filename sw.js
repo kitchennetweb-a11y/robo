@@ -1,6 +1,6 @@
 // Offline: precache the core, then cache everything else (three.js CDN, faces, sounds, audio) as it is first used.
 // Bump V after changing any file so iPads pick up the new version.
-const V = 'robo-v1';
+const V = 'robo-v2';
 const CORE = ['./', 'index.html', 'game.js', 'phrases.json', 'robo.glb', 'manifest.json', 'icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE))); self.skipWaiting(); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k))))));

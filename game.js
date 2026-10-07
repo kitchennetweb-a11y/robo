@@ -7,23 +7,25 @@ export const FACES = {
   normal: ['eye_normal_bot_1', 'mouth_normal'], happy: ['eye_happy', 'mouth_happy'], joy: ['eye_joy', 'mouth_smile'],
   sad: ['eye_sad', 'mouth_sad'], x: ['eye_x', 'mouth_O'], surprised: ['eye_normal_bot_1', 'mouth_O'],
   star: ['eye_star', 'mouth_happy'], heart: ['eye_heart', 'mouth_smile'], sleep: ['eye_blink', 'mouth_flat'],
+  woozy: ['eye_x', 'mouth_flat'],
 };
+// sfx are the parent's own ElevenLabs voice lines: when one plays, Robo doesn't also say a phrase.
 
 export const SAYS = {
-  greet: ['salam', 'salam_doostam', 'bia_bazi'], wake: ['bidar_shodam', 'sobh_bekheir'],
   fall: ['oftadam', 'akh', 'vay', 'oh'], getup: ['pashodam', 'dobare'], full: ['ser_shodam', 'boo_mide'],
-  sleep: ['khabam_miad', 'shab_bekheir', 'in_takhte_mane'], fly: ['miram_bala', 'bala_balatar', 'bala'],
-  land: ['miam_paein', 'paein'], danceStart: ['biya_beraghsim'], danceEnd: ['afarin', 'afarin_kheili_khoob'],
+  danceEnd: ['afarin', 'afarin_kheili_khoob'],
 };
 
 export const REACT = {  // touch zone -> reaction
-  head: { clip: 'HeadPoke', face: 'surprised', sfx: 'head', say: ['akh_saram', 'sar', 'in_sarame', 'yavash'] },
-  face: { clip: 'Sneeze', face: 'surprised', sfx: 'face', say: ['hapche', 'cheshm', 'cheshmam', 'bini', 'dahan'] },
-  belly: { clip: 'BellyPoke', face: 'joy', sfx: 'belly', say: ['ghelghelakam_miad', 'shekam', 'ghelghelaki', 'hahaha'] },
-  foot: { clip: 'FootPoke', face: 'happy', sfx: 'feet', say: ['pa', 'pam_ro_zadi', 'bepar'] },
-  hand: { clip: 'ThumbsUp', face: 'happy', say: ['dast', 'in_dastame', 'afarin'] },
-  antenna: { clip: 'Dizzy', face: 'x', sfx: 'antenna', say: ['sar_gij', 'oh', 'vay'] },
+  head: { clip: 'HeadPoke', face: 'surprised', say: ['akh_saram', 'sar', 'in_sarame', 'yavash'] },
+  face: { clip: 'Sneeze', face: 'surprised', sfx: 'face' },
+  belly: { clip: 'BellyPoke', face: 'joy', sfx: 'belly' },
+  foot: { clip: 'FootPoke', face: 'happy', sfx: 'feet' },
+  hand: { clip: 'Wave', face: 'happy', sfx: 'hi' },
+  antenna: { clip: 'Dizzy', face: 'x', sfx: 'antenna' },
 };
+const HEAD_SWIPE = { clip: 'HeadWobble', face: 'woozy', sfx: 'head' };
+const LONELY = { clip: 'Wave', face: 'sad', sfx: 'bored' };  // nobody played for 2 minutes
 
 export const FOOD = {
   apple: { emoji: '🍎', say: ['sib', 'sib_mikham', 'sib_khoshmaze', 'khoshmaze'] },
@@ -38,7 +40,7 @@ export const DANCES = [['DanceWiggle', 'beraghs'], ['DanceSpin', 'becharkh'], ['
 export const SILLY = [  // random thing to do when nobody has touched Robo for a while
   { clip: 'Fart', face: 'joy', fx: 'fart', say: ['oops', 'boo_mide', 'in_chi_bood'] },
   { clip: 'Sneeze', face: 'surprised', say: ['hapche', 'bebakhshid'] },
-  { clip: 'Wave', face: 'happy', sfx: 'bored', say: ['gorosnam', 'bia_bazi', 'biya_inja', 'ghaza_mikham'] },
+  { clip: 'Wave', face: 'happy', say: ['gorosnam', 'bia_bazi', 'biya_inja', 'ghaza_mikham'] },
   { clip: 'FootPoke', face: 'joy', say: ['bepar', 'dobare'] },
 ];
 
@@ -51,7 +53,7 @@ export function step(s, ev, now = Date.now()) {
   switch (ev.type) {
     case 'greet':
       if (s.mode !== 'idle') return null;
-      s.mode = 'react'; return { clip: 'Wave', face: 'happy', sfx: 'hi', say: pick(SAYS.greet) };
+      s.mode = 'react'; return { clip: 'Wave', face: 'happy', sfx: 'hi' };
     case 'tap':
       if (s.mode === 'sleep') return wake(s);
       if (!free) return null;
@@ -69,27 +71,33 @@ export function step(s, ev, now = Date.now()) {
       if (s.fed.length >= 3) { s.fed = []; s.next = [{ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }]; }
       return { clip: 'Eat', face: 'heart', say: pick(FOOD[ev.food].say) };
     }
+    case 'headSwipe':
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return HEAD_SWIPE;
     case 'bored':
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; return once(pick(SILLY));
+    case 'lonely':
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return LONELY;
     case 'bed':
       if (s.mode === 'sleep') return wake(s);
       if (!free) return null;
-      s.mode = 'sleep'; s.next = []; return { clip: 'Sleep', loop: true, face: 'sleep', fx: 'night', say: pick(SAYS.sleep) };
+      s.mode = 'sleep'; s.next = []; return { clip: 'Sleep', loop: true, face: 'sleep', fx: 'night', sfx: 'sleep' };
     case 'speaker':
       if (s.mode === 'dance') { s.mode = 'idle'; return { ...IDLE, face: 'happy', fx: 'musicOff', say: pick(SAYS.danceEnd) }; }
       if (!free) return null;
-      s.mode = 'dance'; s.next = []; return { clip: 'DanceWiggle', loop: true, face: 'star', fx: 'music', sfx: 'dance', say: pick(SAYS.danceStart) };
+      s.mode = 'dance'; s.next = []; return { clip: 'DanceWiggle', loop: true, face: 'star', fx: 'music', sfx: 'dance' };
     case 'danceStep': {
       if (s.mode !== 'dance') return null;
       const [clip, say] = pick(DANCES); return { clip, loop: true, say };
     }
     case 'swipeUp':
       if (!free) return null;
-      s.mode = 'fly'; s.next = []; return { clip: 'Fly', loop: true, face: 'joy', sfx: 'rocket', fx: 'flyTimer', say: pick(SAYS.fly) };
+      s.mode = 'fly'; s.next = []; return { clip: 'Fly', loop: true, face: 'joy', sfx: 'fly', fx: 'flyTimer' };
     case 'flyEnd':
       if (s.mode !== 'fly') return null;
-      s.mode = 'idle'; return { ...IDLE, sfx: 'fly', say: pick(SAYS.land) };
+      s.mode = 'idle'; return IDLE;
     case 'clipDone':
       if (s.mode !== 'react') return null;
       if (s.next.length) return s.next.shift();
@@ -97,4 +105,4 @@ export function step(s, ev, now = Date.now()) {
   }
   return null;
 }
-function wake(s) { s.mode = 'react'; s.next = []; return { clip: 'Wave', face: 'happy', sfx: 'wake', fx: 'day', say: pick(SAYS.wake) }; }
+function wake(s) { s.mode = 'react'; s.next = []; return { clip: 'Wave', face: 'happy', sfx: 'wake', fx: 'day' }; }
