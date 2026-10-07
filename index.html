@@ -39,6 +39,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { S0, step, FACES, FOOD, pick } from './game.js';
+import { robotVoice } from './voice.js';
 
 const PH = Object.fromEntries((await (await fetch('phrases.json')).json()).map(p => [p.id, p]));
 const DEBUG = location.search.includes('debug');
@@ -100,6 +101,31 @@ part(new THREE.SphereGeometry(.025, 12, 8), 0x6fc3ff, 0, .22, .055);
 for (let i = 0, a = 0; i < 3; i++, a += Math.PI * 2 / 3)  // fins
   part(new THREE.BoxGeometry(.02, .1, .07), 0xe8454a, Math.sin(a) * .06, .07, Math.cos(a) * .06).rotation.y = a;
 
+// ball: flick or tap it; rolls with friction, bounces off walls/Robo/rocket; Robo kicks it back when idle
+const BALL_R = .09, ballV = new THREE.Vector3(), rollAxis = new THREE.Vector3();
+const stripes = Object.assign(document.createElement('canvas'), { width: 128, height: 64 }), sc = stripes.getContext('2d');
+['#e8454a', '#ffd23f', '#3fa7ff', '#ffffff'].forEach((c, i) => { sc.fillStyle = c; sc.fillRect(i * 32, 0, 32, 64); });
+const ball = new THREE.Mesh(new THREE.SphereGeometry(BALL_R, 24, 16),
+  new THREE.MeshStandardMaterial({ map: Object.assign(new THREE.CanvasTexture(stripes), { colorSpace: THREE.SRGBColorSpace }), roughness: .4 }));
+ball.position.set(-.75, BALL_R, .55); ball.castShadow = true; ball.userData.hit = 'ball'; scene.add(ball); props.push(ball);
+const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }, { x: .8, z: .5, r: .12 }];  // Robo, rocket toy
+let kickCool = 0;
+function stepBall(dt, now) {
+  ball.position.addScaledVector(ballV, dt); ballV.multiplyScalar(Math.max(0, 1 - 1.2 * dt));
+  for (const [ax, lo, hi] of [['x', -1.15, 1.3], ['z', -1.3, 1.1]]) {  // play area between bed and speaker
+    if (ball.position[ax] < lo) { ball.position[ax] = lo; ballV[ax] = Math.abs(ballV[ax]) * .7; }
+    if (ball.position[ax] > hi) { ball.position[ax] = hi; ballV[ax] = -Math.abs(ballV[ax]) * .7; }
+  }
+  for (const o of OBSTACLES) {
+    const dx = ball.position.x - o.x, dz = ball.position.z - o.z, d = Math.hypot(dx, dz), min = o.r + BALL_R;
+    if (d >= min || d === 0) continue;
+    const nx = dx / d, nz = dz / d; ball.position.x = o.x + nx * min; ball.position.z = o.z + nz * min;
+    if (o.robo && st.mode === 'idle' && now > kickCool) { kickCool = now + 1500; ballV.set(0, 0, 0); dispatch({ type: 'ball' }); continue; }
+    const vn = ballV.x * nx + ballV.z * nz; if (vn < 0) { ballV.x -= 1.7 * vn * nx; ballV.z -= 1.7 * vn * nz; }
+  }
+  const sp = ballV.length(); if (sp > 1e-3) ball.rotateOnWorldAxis(rollAxis.set(ballV.z, 0, -ballV.x).normalize(), sp * dt / BALL_R);
+}
+
 // ---------- robot ----------
 const gltf = await new GLTFLoader().loadAsync('robo.glb');
 const robot = gltf.scene; scene.add(robot);
@@ -154,22 +180,14 @@ for (const [rad, h, color] of [[.09, .45, 0xff6a00], [.05, .3, 0xffe066]]) {
 const ac = new (window.AudioContext || window.webkitAudioContext)();
 const bufs = {}; let audioBusyUntil = 0;
 const loadBuf = async u => { const res = await fetch(u); if (!res.ok) throw res.status; return ac.decodeAudioData(await res.arrayBuffer()); };
-// Robot voice = ring modulator (voice x low sine) mixed with some dry voice, to match the parent's ElevenLabs "Robot" filter.
-// ponytail: ROBOT_HZ / ROBOT_DRY are by-ear knobs; compare against sfx/hi.mp3 on the iPad and nudge.
-const ROBOT_HZ = 50, ROBOT_DRY = .45;
-function playBuf(b, rate = 1, robot = false) {
+function playBuf(b, rate = 1, robot = false) {  // robot: voice.js vocoder, matching the parent's ElevenLabs "Robot" lines
   const s = ac.createBufferSource(), dur = b.duration / rate; s.buffer = b; s.playbackRate.value = rate;
-  if (robot) {
-    const ring = ac.createGain(), dry = ac.createGain(), o = ac.createOscillator();
-    ring.gain.value = 0; o.frequency.value = ROBOT_HZ; o.connect(ring.gain); dry.gain.value = ROBOT_DRY;
-    s.connect(ring).connect(ac.destination); s.connect(dry).connect(ac.destination);
-    o.start(); o.stop(ac.currentTime + dur + .1);
-  } else s.connect(ac.destination);
+  if (robot) robotVoice(ac, s, ac.destination, dur); else s.connect(ac.destination);
   s.start();
   audioBusyUntil = Math.max(audioBusyUntil, performance.now() + dur * 1000 + 400);
   return dur * 1000;
 }
-for (const n of ['antenna', 'arm', 'belly', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
+for (const n of ['antenna', 'arm', 'ball', 'belly', 'bored', 'dance', 'face', 'feed', 'feet', 'fly', 'head', 'hi', 'jump', 'listen', 'rocket', 'sleep', 'wake', 'yay'])
   loadBuf(`sfx/${n}.mp3`).then(b => bufs['sfx:' + n] = b, () => {});
 const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
@@ -231,6 +249,7 @@ const FX = {
   fart,
   music: () => music(true), musicOff: () => music(false),
   flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
+  kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 2.1; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // back toward the child
   night() {
     scene.background.copy(NIGHT); hemi.intensity = .5; sun.intensity = .25;
     snoreTimer = setInterval(() => { tone('sawtooth', 75, 60, 1.3, .12, 300, 6); zzz(); }, 3200);
@@ -264,11 +283,28 @@ function unlock() {
   lastUser = performance.now();
   if (!greeted && clips.Idle) { greeted = true; dispatch({ type: 'greet' }); }
 }
+// ball dragging: follows the finger on the floor; letting go throws it with the finger's speed
+const floorAtBall = new THREE.Plane(new THREE.Vector3(0, 1, 0), -BALL_R), hitP = new THREE.Vector3();
+let drag = null;
+function floorAt(x, y) { ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, cam); return ray.ray.intersectPlane(floorAtBall, hitP); }
 r.domElement.addEventListener('pointerdown', e => {
   unlock(); down = { x: e.clientX, y: e.clientY };
   look.set((e.clientX / innerWidth - .5) * 1.0, (e.clientY / innerHeight - .5) * .6);
+  if (hitAt(e.clientX, e.clientY)?.object === ball) { drag = { t: performance.now(), moved: 0, v: new THREE.Vector3() }; ballV.set(0, 0, 0); }
+});
+addEventListener('pointermove', e => {
+  if (!drag || !floorAt(e.clientX, e.clientY)) return;
+  const now = performance.now(), dt = Math.max(now - drag.t, 8) / 1000;
+  hitP.x = THREE.MathUtils.clamp(hitP.x, -1.15, 1.3); hitP.z = THREE.MathUtils.clamp(hitP.z, -1.3, 1.1);
+  drag.v.subVectors(hitP, ball.position).divideScalar(dt).setY(0); drag.moved += ball.position.distanceTo(hitP);
+  ball.position.x = hitP.x; ball.position.z = hitP.z; drag.t = now;
 });
 r.domElement.addEventListener('pointerup', e => {
+  if (drag) {  // tap = roll it to Robo, flick = throw
+    if (drag.moved < .05) ballV.set(-ball.position.x, 0, -ball.position.z).setLength(1.6);
+    else ballV.copy(drag.v).clampLength(0, 3.5);
+    drag = down = null; return;
+  }
   if (!down) return;
   const dx = e.clientX - down.x, dy = e.clientY - down.y, h = hitAt(down.x, down.y); down = null;
   if (!h) return;
@@ -359,6 +395,8 @@ r.setAnimationLoop(() => {
   mixer.update(dt);
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
+  if (!drag) stepBall(dt, now);
+  if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
   head.quaternion.multiply(lookQ.setFromEuler(lookE.set(lookNow.y, lookNow.x, 0)));
   applyFace(now);
@@ -384,7 +422,7 @@ r.setAnimationLoop(() => {
 });
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost') navigator.serviceWorker.register('sw.js');
-window.robo = { dispatch, st, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
+window.robo = { dispatch, st, ball, ballV, hit: (x, y) => hitAt(x, y)?.object.userData.hit, pose: (n, t) => { playClip(n, false); cur.time = t; cur.paused = true; } };  // console helpers
 </script>
 </body>
 </html>

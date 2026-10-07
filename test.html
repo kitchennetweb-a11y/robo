@@ -5,6 +5,7 @@
 <script type="module">
 import { S0, step, SAYS, REACT, FOOD, FALLS, DANCES, SILLY, FACES } from './game.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { robotVoice } from './voice.js';
 const lines = []; let fails = 0;
 const ok = (c, m) => { lines.push((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 
@@ -24,7 +25,7 @@ const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
 ok(!noTex.length, 'every face texture exists ' + noTex);
 const faceRefs = [...Object.values(REACT), ...SILLY].map(r => r.face); ok(faceRefs.every(f => FACES[f]), 'every face name is defined');
-const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
+const sfx = ['hi', 'wake', 'dance', 'fly', 'bored', 'sleep', 'head', 'feed', 'yay', 'jump', 'listen', 'rocket', 'ball', ...Object.values(REACT).map(r => r.sfx).filter(Boolean)];
 const noSfx = (await Promise.all(sfx.map(async n => (await fetch(`sfx/${n}.mp3`, { method: 'HEAD' })).ok ? null : n))).filter(Boolean);
 ok(!noSfx.length, 'every sfx exists ' + noSfx);
 
@@ -51,17 +52,44 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); const a = step(s, { type: 'rocket' }), b = step(s, { type: 'clipDone' });
   ok(a?.clip === 'RocketLaunch' && a.sfx === 'rocket' && b?.clip === 'RocketLand' && b.delay > 0 && settle(s) === 'idle', 'rocket toy -> launch -> land -> idle'); }
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'arm' })?.sfx === 'arm', 'arm -> arm.mp3'); }
+{ const s = S0(); const a = step(s, { type: 'ball' }); ok(a?.sfx === 'ball' && a.fx === 'kickBall' && settle(s) === 'idle', 'ball reaches Robo -> kick + ball.mp3 -> idle');
+  step(s, { type: 'speaker' }); ok(step(s, { type: 'ball' }) === null, 'ball ignored while dancing'); }
 { const s = S0(); ok(step(s, { type: 'feed', food: 'apple' })?.sfx === 'feed', 'feed -> feed.mp3'); }
 { const s = S0(); for (let i = 0; i < 4; i++) step(s, { type: 'tap', zone: 'belly' }, i * 100); ok(step(s, { type: 'clipDone' })?.sfx === 'yay', 'get up after a fall -> yay.mp3'); }
 { const s = S0(); step(s, { type: 'speaker' }); ok(step(s, { type: 'speaker' })?.sfx === 'yay', 'dance end -> yay.mp3'); }
 { // a parent voice line never gets a phrase on top
   const acts = [];
-  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp', 'rocket']) acts.push(step(S0(), { type: ev }));
+  for (const ev of ['greet', 'headSwipe', 'lonely', 'bed', 'speaker', 'swipeUp', 'rocket', 'ball']) acts.push(step(S0(), { type: ev }));
   for (let i = 0; i < 40; i++) { const s = S0(); step(s, { type: 'speaker' }); acts.push(step(s, { type: 'danceStep' })); }
   acts.push(step(S0(), { type: 'feed', food: 'milk' }));
   for (const zone of Object.keys(REACT)) acts.push(step(S0(), { type: 'tap', zone }));
   for (let i = 0; i < 40; i++) acts.push(step(S0(), { type: 'bored' }));
   const both = acts.filter(a => a?.sfx && a.say); ok(!both.length, 'no voice line + phrase together ' + both.map(a => a.clip)); }
+
+// robot voice: rendering a plain phrase through voice.js must match the parent's ElevenLabs Robot lines
+{
+  const SR = 44100, dec = async u => new OfflineAudioContext(1, 1, SR).decodeAudioData(await (await fetch(u)).arrayBuffer());
+  const rms = a => Math.sqrt(a.reduce((s, v) => s + v * v, 0) / a.length), pk = a => a.reduce((m, v) => Math.max(m, Math.abs(v)), 0);
+  const locked = x => {  // share of loud frames whose period is the robot's 7.75 ms (129 Hz) buzz
+    const N = 2048, mx = pk(x); let hit = 0, n = 0;
+    for (let i = 0; i + N < x.length; i += 1024) {
+      const f = x.subarray(i, i + N); if (rms(f) < mx * .08) continue;
+      let best = 0, bl = 0; const a0 = f.reduce((s, v) => s + v * v, 0);
+      for (let L = 88; L < 882; L++) { let s = 0; for (let k = 0; k + L < N; k++) s += f[k] * f[k + L]; if (s > best) { best = s; bl = L; } }
+      if (best > .3 * a0) { n++; const ms = bl / SR * 1000; if (Math.abs(ms - 7.75) < .5 || Math.abs(ms - 15.5) < 1) hit++; }
+    }
+    return hit / Math.max(n, 1);
+  };
+  const target = (await dec('sfx/hi.mp3')).getChannelData(0);
+  const b = await dec('audio/salam.mp3'), ctx = new OfflineAudioContext(1, Math.ceil((b.duration + .3) * SR), SR), s = ctx.createBufferSource();
+  s.buffer = b; robotVoice(ctx, s, ctx.destination, b.duration); s.start();
+  const y = (await ctx.startRendering()).getChannelData(0);
+  ok(locked(target) > .6, `parent's robot line is locked at 129 Hz (${locked(target).toFixed(2)})`);
+  ok(locked(b.getChannelData(0)) < .2, 'plain phrase is not');
+  ok(locked(y) > .6, `robotVoice output is locked at 129 Hz (${locked(y).toFixed(2)})`);
+  ok(pk(y) <= 1, `robotVoice never clips (peak ${pk(y).toFixed(2)})`);
+  const lv = rms(y) / rms(target); ok(lv > .6 && lv < 1.4, `robotVoice loudness matches the parent's lines (${lv.toFixed(2)}×)`);
+}
 
 lines.push(fails ? `\n${fails} FAILED` : '\nALL PASS'); out.textContent = lines.join('\n'); document.title = fails ? 'FAIL' : 'PASS';
 </script>

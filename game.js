@@ -93,6 +93,9 @@ export function step(s, ev, now = Date.now()) {
       if (s.mode !== 'dance') return null;
       const [clip, say, sfx] = pick(DANCES); return { clip, loop: true, say: say || undefined, sfx };
     }
+    case 'ball':  // the ball rolled into Robo: hop and kick it back
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; return { clip: 'FootPoke', face: 'joy', sfx: 'ball', fx: 'kickBall' };
     case 'rocket':  // tap the toy rocket: blast off, wait off-screen, land
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; s.next = [{ clip: 'RocketLand', face: 'happy', delay: 700 }];
