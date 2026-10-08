@@ -18,7 +18,7 @@ const missing = refs.filter(r => !ids.has(r)); ok(!missing.length, 'every reacti
 
 // clips exist in robo.glb, faces exist in face/, sfx exist
 const anims = new Set((await new GLTFLoader().loadAsync('robo.glb')).animations.map(a => a.name));
-const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', 'RocketLaunch', 'RocketFly', 'RocketLand', 'Drink', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
+const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', 'RocketLaunch', 'RocketFly', 'RocketLand', 'Drink', 'Hug', 'Read', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
 const noClip = clips.filter(c => !anims.has(c)); ok(!noClip.length, 'every clip is in robo.glb ' + noClip);
 const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A', 'mouth_O'))];
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
@@ -53,6 +53,13 @@ const askFor = item => { const s = S0(); let a; for (let i = 0; i < 200 && s.wan
   step(s, { type: 'ball' }); const yay = step(s, { type: 'clipDone' }); ok(yay?.fx === 'correct' && yay.item === 'ball' && s.want === null, 'ball brought: kick, then celebrate'); }
 { const [s] = askFor('water'); ok(step(s, { type: 'askEnd' })?.fx === 'askDone' && s.want === null, 'no answer for a while: request dropped quietly'); }
 { const s = S0(); step(s, { type: 'speaker' }); ok(step(s, { type: 'ask' }) === null, 'no asking while dancing'); }
+// toys for the toy words
+{ const s = S0(); const a = step(s, { type: 'car' }); ok(a?.say === 'mashin' && a.fx === 'drive' && a.loop && step(s, { type: 'clipDone' })?.clip === 'Idle' && s.mode === 'idle', 'car: «ماشین!», drives (sends clipDone when parked) -> idle'); }
+{ const s = S0(); const a = step(s, { type: 'teddy' }); ok(a?.clip === 'Hug' && a.say.join() === 'khers,dooset_daram' && settle(s) === 'idle', 'teddy: Hug + «خرس! دوستت دارم!» -> idle'); }
+{ const s = S0(); const a = step(s, { type: 'book' }); ok(a?.clip === 'Read' && a.say === 'ketab' && settle(s) === 'idle', 'book: Read + «کتاب!» -> idle'); }
+for (const toy of ['car', 'teddy', 'book']) { const [s, a] = askFor(toy); step(s, { type: toy }); const yay = step(s, { type: 'clipDone' });
+  ok(a.say[1] === 'bede_be_man' && yay?.fx === 'correct' && yay.item === toy && s.want === null, `asked for the ${toy}, child taps it -> celebrate`); }
+{ const s = S0(); step(s, { type: 'bed' }); ok(['car', 'teddy', 'book'].every(t => step(s, { type: t }) === null), 'toys ignored while asleep'); }
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'nope' }) === null && s.mode === 'idle', 'unknown tap zone is ignored, Robo not stuck'); }
 { const s = S0(); step(s, { type: 'tap', zone: 'head' }, 0); step(s, { type: 'tap', zone: 'head' }, 5000); ok(s.mode === 'react' && settle(s) === 'idle', 'slow taps do not fall'); }
 { const s = S0(); step(s, { type: 'bed' }); ok(s.mode === 'sleep', 'bed -> sleep'); ok(step(s, { type: 'tap', zone: 'belly' })?.fx === 'day' && settle(s) === 'idle', 'tap wakes -> idle'); }

@@ -60,7 +60,8 @@ Steps 1–11 DONE and verified in the browser pane: `index.html` (whole app), `g
 - Peekaboo DONE: folded starry blanket on the floor left of Robo (-.55, .1). Tap → it arcs over and covers Robo (mode 'hide', blanket "breathes"); tap blanket or Robo (or wait 7 s) → it flies back folded, Robo does DanceJump (arms up) with joy face + peek.mp3. Other toys are ignored while hiding.
 - Console helpers: `robo.render()`, `robo.stepBlanket(t)`, `robo.stepBall(dt, t)` work even when the pane is hidden (rAF paused, screenshots time out).
 - Robo asks (learning loop) DONE: game.js `ASK` (5 foods + ball). Every 35–50 s idle (first 15 s after greet) Robo waves + says the request (voice only); 8 s → asks again + hint (tray food wiggles / ball hops); right item → eat/drink/kick then DanceJump + «آفرین» etc.; other food → eats anyway, asks again; 25 s → dropped. Parent panel shows asked/right per item (localStorage `asked`, `correct`). `say()` accepts an array.
-**Next: #3 toys for the unused words (car ماشین, teddy خرس, book کتاب), then iPad testing.**
+- Toy words DONE: car (front right, drives to Robo, beeps, reverses; `stepCar`), teddy (front left, flies into his arms for `Hug` + «خرس! دوستت دارم!»), book (on the bed, 1.4× with an invisible bigger tap box, flies into his hands, opens for `Read` + «کتاب!»). `stepToys` moves them by clip; all three are also in ASK (+ «بده به من!», hint = hop). Ball area narrowed to x ±.6 so it never meets them.
+**Next: iPad testing with the child; then parent per-word view or more silly reactions.**
 
 ## Next steps (Phase A, in order)
 1. Unzip `robotz_source_files.zip` into `blender/src/`. Peek at the reference PNGs to confirm which parts are "Head 2", "Body 5", "Head 4".

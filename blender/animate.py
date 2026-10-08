@@ -91,6 +91,14 @@ def drink(u):  # right hand (holding the cup in the web app) to the mouth, head 
     return dict(armR=(DRINK['out'] * up, DRINK['fwd'] * up), elbowR=DRINK['elbow'] * up, swingR=DRINK['swing'] * up, curlR=.45 * up, twistR=DRINK['twist'] * up,
                 head=((-18 + 4 * gulp) * up, 0, 0), rot=(-5 * up, 0, 0), armL=(6 + 8 * up, 0))
 DRINK = dict(out=30, fwd=150, elbow=0, swing=-30, twist=.5)  # from blender/drink_check.py: hand at the mouth, palm sideways, thumb up
+def hug(u):  # teddy held against the chest (placed by index.html), arms wrapped round it, swaying with love
+    e = ease(u / .2) * (1 - ease((u - .85) / .15)); s = S(u, 2)
+    return dict(armL=(10 * e, 65 * e), armR=(10 * e, 65 * e), elbowL=55 * e, elbowR=55 * e, swingL=-35 * e, swingR=-35 * e,
+                rot=(4 * e, 7 * s * e, 0), head=(6 * e, 10 * s * e, 0))
+def read(u):  # book held open in front of the chest (placed by index.html), looking down at it, nodding along
+    e = ease(u / .2) * (1 - ease((u - .85) / .15))
+    return dict(armL=(12 * e, 50 * e), armR=(12 * e, 50 * e), elbowL=75 * e, elbowR=75 * e, swingL=-20 * e, swingR=-20 * e,
+                head=((18 + 5 * abs(S(u, 3))) * e, 4 * S(u, 1) * e, 0))
 def dance_wiggle(u):
     s = S(u)
     return dict(rot=(0, 12 * s, 4 * S(u, 2)), loc=(.03 * s, 0, .02 * abs(s)), head=(0, -8 * s, 0),
@@ -118,7 +126,7 @@ CLIPS = {"Idle": (48, True, idle), "HeadPoke": (24, False, head_poke), "BellyPok
          "FallBack": (30, False, lambda u: fall(u, "back")), "GetUpBack": (30, False, lambda u: get_up(u, "back")),
          "FallFront": (30, False, lambda u: fall(u, "front")), "GetUpFront": (30, False, lambda u: get_up(u, "front")),
          "FallApart": (48, False, fall_apart), "Reassemble": (48, False, reassemble),
-         "Fart": (36, False, fart), "Sneeze": (36, False, sneeze), "Eat": (48, False, eat), "Drink": (56, False, drink),
+         "Fart": (36, False, fart), "Sneeze": (36, False, sneeze), "Eat": (48, False, eat), "Drink": (56, False, drink), "Hug": (72, False, hug), "Read": (80, False, read),
          "DanceWiggle": (24, True, dance_wiggle), "DanceSpin": (36, False, dance_spin), "DanceJump": (24, True, dance_jump),
          "Sleep": (72, True, sleep), "Fly": (48, True, fly), "Wave": (48, False, wave), "ThumbsUp": (36, False, thumbs_up)}
 

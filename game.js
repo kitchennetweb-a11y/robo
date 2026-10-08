@@ -38,7 +38,13 @@ export const FOOD = {
 // what Robo asks for (learning: the child hears the word and brings the thing) -> phrases, said in order
 export const ASK = {
   apple: ['sib_mikham'], banana: ['moz_mikham'], bread: ['nan_mikham'], milk: ['shir_mikham'], water: ['ab_mikham'],
-  ball: ['toop', 'bede_be_man'],
+  ball: ['toop', 'bede_be_man'], car: ['mashin', 'bede_be_man'], teddy: ['khers', 'bede_be_man'], book: ['ketab', 'bede_be_man'],
+};
+// toys for the toy words: tap -> the toy comes to Robo (index.html moves it during the clip), then goes home
+const TOYS = {
+  car: { clip: 'Idle', loop: true, face: 'joy', say: 'mashin', fx: 'drive' },  // drive fx sends clipDone when parked again
+  teddy: { clip: 'Hug', face: 'heart', say: ['khers', 'dooset_daram'] },
+  book: { clip: 'Read', face: 'happy', say: 'ketab' },
 };
 const PRAISE = ['afarin', 'afarin_kheili_khoob', 'mamnoon'];
 const got = (s, item) => {  // the child brought what Robo asked for: celebrate after the eat/kick
@@ -110,6 +116,10 @@ export function step(s, ev, now = Date.now()) {
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; s.next = s.want === 'ball' ? [got(s, 'ball')] : [];
       return { clip: 'FootPoke', face: 'joy', sfx: 'ball', fx: 'kickBall' };
+    case 'car': case 'teddy': case 'book':
+      if (s.mode !== 'idle') return null;
+      s.mode = 'react'; s.next = s.want === ev.type ? [got(s, ev.type)] : [];
+      return TOYS[ev.type];
     case 'ask':  // Robo asks for something (voice only first: listening practice)
       if (s.mode !== 'idle' || s.want) return null;
       s.want = pick(Object.keys(ASK)); s.mode = 'react';
