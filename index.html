@@ -191,7 +191,19 @@ function stepBall(dt, now) {
 
 // ---------- robot ----------
 const gltf = await new GLTFLoader().loadAsync('robo.glb');
-const robot = gltf.scene; scene.add(robot);
+const robot = gltf.scene; scene.add(robot); robot.rotation.order = 'YXZ';  // yaw, then bank (rocket loop)
+// rocket loop around the room: an ellipse that starts and ends where Robo stands (right, round the back, left, home).
+// Robo faces where he's flying and banks into the turn; turns back to the child at both ends. Sends clipDone when home.
+let orbit = null;
+const LOOP_X = 1.25, LOOP_Z = .65;
+function stepOrbit(now) {
+  if (!orbit) return;
+  const u = Math.min((now - orbit.t0) / orbit.dur, 1), e = u * u * (3 - 2 * u), th = e * Math.PI * 2;
+  const turn = Math.min(u / .12, (1 - u) / .12, 1);  // 0 at the ends (facing the child), 1 in flight
+  robot.position.set(LOOP_X * Math.sin(th), .12 * Math.sin(2 * th), LOOP_Z * (Math.cos(th) - 1));
+  robot.rotation.set(0, Math.atan2(LOOP_X * Math.cos(th), -LOOP_Z * Math.sin(th)) * turn, -.3 * turn);
+  if (u >= 1) { orbit = null; robot.position.set(0, 0, 0); robot.rotation.set(0, 0, 0); dispatch({ type: 'clipDone' }); }
+}
 robot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
 const bone = n => robot.getObjectByName(n);
 const head = bone('DEF-Head'), body = bone('DEF-Body'), handR = bone('DEF-handR');
@@ -316,6 +328,7 @@ const FX = {
   blanketOff() { clearTimeout(peekTimer); moveBlanket(FOLDED, 900); },
   music: () => music(true), musicOff: () => music(false),
   flyTimer: () => setTimeout(() => dispatch({ type: 'flyEnd' }), 3500),
+  orbit: () => orbit = { t0: performance.now(), dur: 5500 },
   kickBall: () => setTimeout(() => { const a = (Math.random() - .5) * 1.2; ballV.set(Math.sin(a), 0, Math.cos(a)).multiplyScalar(2.2); }, 150),  // straight back toward the screen (±35°)
   night() {
     scene.background.copy(NIGHT); hemi.intensity = .5; sun.intensity = .25;
@@ -462,7 +475,8 @@ const frame = () => {
   head.quaternion.multiply(lookQ.setFromEuler(lookE.set(lookNow.y, lookNow.x, 0)));
   applyFace(now);
   const clipName = cur?.getClip().name, bp = body.getWorldPosition(new THREE.Vector3());
-  flame.visible = (clipName === 'RocketLaunch' && cur.time > .35) || (clipName === 'RocketLand' && bp.y > .05);
+  stepOrbit(now);
+  flame.visible = (clipName === 'RocketLaunch' && cur.time > .35) || clipName === 'RocketFly' || (clipName === 'RocketLand' && bp.y > .05);
   cam.position.x = 0;
   if (flame.visible) {
     flame.scale.set(.85 + Math.random() * .3, .75 + Math.random() * .5, .85 + Math.random() * .3);

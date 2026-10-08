@@ -18,7 +18,7 @@ const missing = refs.filter(r => !ids.has(r)); ok(!missing.length, 'every reacti
 
 // clips exist in robo.glb, faces exist in face/, sfx exist
 const anims = new Set((await new GLTFLoader().loadAsync('robo.glb')).animations.map(a => a.name));
-const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', 'RocketLaunch', 'RocketLand', 'Drink', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
+const clips = ['Idle', 'Wave', 'Eat', 'Sleep', 'Fly', 'Fart', 'HeadWobble', 'RocketLaunch', 'RocketFly', 'RocketLand', 'Drink', ...Object.values(REACT).map(r => r.clip), ...FALLS.flat(), ...DANCES.map(d => d[0]), ...SILLY.map(s => s.clip)];
 const noClip = clips.filter(c => !anims.has(c)); ok(!noClip.length, 'every clip is in robo.glb ' + noClip);
 const tex = [...new Set(Object.values(FACES).flat().concat('eye_blink', 'mouth_A', 'mouth_O'))];
 const noTex = (await Promise.all(tex.map(async t => (await fetch(`face/${t}.png`, { method: 'HEAD' })).ok ? null : t))).filter(Boolean);
@@ -54,7 +54,9 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
 { const s = S0(); const a = step(s, { type: 'swipeUp' }), b = step(s, { type: 'flyEnd' }); ok(a.sfx === 'fly' && !a.say && !b.sfx && !b.say, 'flying is only fly.mp3'); }
 { const s = S0(); ok(step(s, { type: 'bed' })?.sfx === 'sleep', 'bed -> sleep.mp3'); }
 { const s = S0(); const a = step(s, { type: 'rocket' }), b = step(s, { type: 'clipDone' });
-  ok(a?.clip === 'RocketLaunch' && a.sfx === 'rocket' && b?.clip === 'RocketLand' && b.delay > 0 && settle(s) === 'idle', 'rocket toy -> launch -> land -> idle'); }
+  const c = step(s, { type: 'clipDone' });  // the loop sends clipDone when Robo is home
+  ok(a?.clip === 'RocketLaunch' && a.sfx === 'rocket' && b?.clip === 'RocketFly' && b.loop && b.fx === 'orbit' && c?.clip === 'RocketLand' && settle(s) === 'idle',
+    'rocket toy -> launch -> loop round the room -> land -> idle'); }
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'arm' })?.sfx === 'arm', 'arm -> arm.mp3'); }
 { const s = S0(); const a = step(s, { type: 'ball' }); ok(a?.sfx === 'ball' && a.fx === 'kickBall' && settle(s) === 'idle', 'ball reaches Robo -> kick + ball.mp3 -> idle');
   step(s, { type: 'speaker' }); ok(step(s, { type: 'ball' }) === null, 'ball ignored while dancing'); }

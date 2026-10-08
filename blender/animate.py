@@ -28,11 +28,15 @@ def hop(u, h=.18, arms=40):
     j = bump(u, .15, .85); q = bump(u, 0, .15) + bump(u, .85, 1)
     return dict(loc=(0, 0, h * j), scale=(1 + .06 * q - .03 * j, 1 + .06 * q - .03 * j, 1 - .12 * q + .06 * j),
                 armL=(6 + arms * j, 0), armR=(6 + arms * j, 0))
-ROCKET_H = 3.2  # high enough to leave the top of the web app's camera view
-def rocket_launch(u):  # crouch, ignite, accelerate straight up out of view
+ROCKET_H = .9  # cruising height: about half way up the web app's view (the loop around the room is done in index.html)
+def rocket_launch(u):  # crouch, ignite, rise and level off at cruising height
     q = bump(u, 0, .4); up = max(0.0, (u - .35) / .65)
-    return dict(loc=(0, 0, ROCKET_H * up ** 2), scale=(1 + .08 * q, 1 + .08 * q, 1 - .15 * q),
+    return dict(loc=(0, 0, ROCKET_H * (1 - (1 - up) ** 2)), scale=(1 + .08 * q, 1 + .08 * q, 1 - .15 * q),
                 head=(10 * q - 6 * (up > 0), 0, 0), armL=(6 - 4 * min(up * 5, 1), 0), armR=(6 - 4 * min(up * 5, 1), 0))
+def rocket_fly(u):  # loop: cruising, leaning into the flight like a superhero, arms swept back, slight bob
+    s = S(u)
+    return dict(loc=(0, 0, ROCKET_H + .03 * s), rot=(22 + 3 * S(u, 2), 0, 0), head=(-14, 0, 0),
+                armL=(12, -35 + 5 * s), armR=(12, -35 - 5 * s))
 def rocket_land(u):  # come down slowing like a lander, squash on touchdown, wobble
     d = min(u / .6, 1.0); q = bump(u, .58, .8)
     return dict(loc=(0, 0, ROCKET_H * (1 - d) ** 2 + .04 * bump(u, .8, .95)), scale=(1 + .08 * q, 1 + .08 * q, 1 - .15 * q),
@@ -110,7 +114,7 @@ def thumbs_up(u):
 
 CLIPS = {"Idle": (48, True, idle), "HeadPoke": (24, False, head_poke), "BellyPoke": (36, False, belly_poke),
          "FootPoke": (24, False, hop), "Dizzy": (48, True, dizzy), "HeadWobble": (36, False, head_wobble),
-         "RocketLaunch": (48, False, rocket_launch), "RocketLand": (40, False, rocket_land), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
+         "RocketLaunch": (48, False, rocket_launch), "RocketFly": (24, True, rocket_fly), "RocketLand": (40, False, rocket_land), "Fall": (30, False, fall), "GetUp": (30, False, get_up),
          "FallBack": (30, False, lambda u: fall(u, "back")), "GetUpBack": (30, False, lambda u: get_up(u, "back")),
          "FallFront": (30, False, lambda u: fall(u, "front")), "GetUpFront": (30, False, lambda u: get_up(u, "front")),
          "FallApart": (48, False, fall_apart), "Reassemble": (48, False, reassemble),

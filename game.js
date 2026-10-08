@@ -105,9 +105,9 @@ export function step(s, ev, now = Date.now()) {
       if (s.mode === 'hide') { s.mode = 'react'; return { clip: 'DanceJump', face: 'joy', sfx: 'peek', fx: 'blanketOff' }; }
       if (s.mode !== 'idle') return null;
       s.mode = 'hide'; return { clip: 'Idle', loop: true, face: 'normal', fx: 'blanketOn' };
-    case 'rocket':  // tap the toy rocket: blast off, wait off-screen, land
+    case 'rocket':  // tap the toy rocket: rise half way, loop around the room (fx 'orbit' sends clipDone when back), land
       if (s.mode !== 'idle') return null;
-      s.mode = 'react'; s.next = [{ clip: 'RocketLand', face: 'happy', delay: 700 }];
+      s.mode = 'react'; s.next = [{ clip: 'RocketFly', loop: true, fx: 'orbit' }, { clip: 'RocketLand', face: 'happy' }];
       return { clip: 'RocketLaunch', face: 'star', sfx: 'rocket' };
     case 'swipeUp':
       if (!free) return null;
