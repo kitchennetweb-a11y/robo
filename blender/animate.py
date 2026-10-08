@@ -84,9 +84,9 @@ def eat(u):
 def drink(u):  # right hand (holding the cup in the web app) to the mouth, head back, three gulps
     up = ease(u / .25) * (1 - ease((u - .8) / .2))
     gulp = sin(2 * pi * 3 * max(u - .3, 0) / .5) * (.3 < u < .8)
-    return dict(armR=(DRINK['out'] * up, DRINK['fwd'] * up), elbowR=DRINK['elbow'] * up, swingR=DRINK['swing'] * up,
+    return dict(armR=(DRINK['out'] * up, DRINK['fwd'] * up), elbowR=DRINK['elbow'] * up, swingR=DRINK['swing'] * up, curlR=.45 * up, twistR=DRINK['twist'] * up,
                 head=((-18 + 4 * gulp) * up, 0, 0), rot=(-5 * up, 0, 0), armL=(6 + 8 * up, 0))
-DRINK = dict(out=30, fwd=140, elbow=20, swing=-30)  # from blender/drink_check.py: hand ~5 cm in front of/below the mouth
+DRINK = dict(out=30, fwd=150, elbow=0, swing=-30, twist=.5)  # from blender/drink_check.py: hand at the mouth, palm sideways, thumb up
 def dance_wiggle(u):
     s = S(u)
     return dict(rot=(0, 12 * s, 4 * S(u, 2)), loc=(.03 * s, 0, .02 * abs(s)), head=(0, -8 * s, 0),

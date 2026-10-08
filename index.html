@@ -161,9 +161,9 @@ function stepBlanket(now) {
   blanket.scale.lerpVectors(blanketMove.s, blanketMove.to.s, e);
   if (u >= 1) blanketMove = null;
 }
-// cup for the Drink clip: follows the right hand, rim tilting toward the mouth; white milk cup or clear water glass
+// cup for the Drink clip, held in the right palm: white milk cup or clear water glass
 const cup = new THREE.Mesh(new THREE.CylinderGeometry(.036, .03, .1, 20), new THREE.MeshStandardMaterial({ roughness: .3, transparent: true }));
-cup.visible = false; cup.castShadow = true; scene.add(cup);
+cup.visible = false; cup.castShadow = true;
 const CUPS = { milk: [0xffffff, 1], water: [0x9fd8ff, .55] };
 const setCup = kind => { cup.material.color.set(CUPS[kind][0]); cup.material.opacity = CUPS[kind][1]; };
 const OBSTACLES = [{ x: 0, z: 0, r: .3, robo: true }];  // rocket and bottle sit behind the ball's fence
@@ -194,6 +194,8 @@ const robot = gltf.scene; scene.add(robot);
 robot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
 const bone = n => robot.getObjectByName(n);
 const head = bone('DEF-Head'), body = bone('DEF-Body'), handR = bone('DEF-handR');
+// hand-local frame (measured): fingers +Y, palm faces -X, thumb +Z -> cup sits in the palm, standing across it, rim on the thumb side
+handR.add(cup); cup.position.set(-.045, .04, 0); cup.rotation.x = Math.PI / 2;
 const mixer = new THREE.AnimationMixer(robot);
 const clips = Object.fromEntries(gltf.animations.map(c => [c.name, mixer.clipAction(c)]));
 let cur;
@@ -453,11 +455,6 @@ const frame = () => {
   stepBall(dt, now);
   stepBubbles(dt, now); stepBlanket(now);
   cup.visible = cur?.getClip().name === 'Drink';
-  if (cup.visible) {  // same raise/hold/lower timing as the Blender clip
-    const u = cur.time / cur.getClip().duration, ease = x => (x = Math.min(Math.max(x, 0), 1), x * x * (3 - 2 * x));
-    const up = ease(u / .25) * (1 - ease((u - .8) / .2));
-    handR.getWorldPosition(cup.position); cup.position.y += .02; cup.rotation.set(-.7 * up, 0, 0);  // rim toward the mouth
-  }
   if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
   if (ballV.lengthSq() > .04) { const p = ball.position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the rolling ball
   lookNow.lerp(st.mode === 'idle' ? look : look.clone().set(0, 0), .08);
