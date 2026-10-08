@@ -89,7 +89,8 @@ for (const [y, rad] of [[.44, .1], [.2, .07]]) {
   c.rotation.x = Math.PI / 2; c.position.set(1.65, y, -.52); c.userData.hit = 'speaker'; scene.add(c); props.push(c);
 }
 // toy rocket on the floor: tap it and Robo blasts off
-const rocketToy = new THREE.Group(); rocketToy.position.set(.85, 0, .1);  // beside Robo, behind the ball's fence (z .35) so the ball never hits it rocketToy.rotation.y = -.4; scene.add(rocketToy);
+const rocketToy = new THREE.Group(); rocketToy.rotation.y = -.4; scene.add(rocketToy);
+rocketToy.position.set(.85, 0, .1);  // beside Robo, behind the ball's fence (z .35) so the ball never hits it
 function part(geo, color, x, y, z) {
   const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: .5 }));
   m.position.set(x, y, z); m.castShadow = true; m.userData.hit = 'rocket'; rocketToy.add(m); props.push(m); return m;
