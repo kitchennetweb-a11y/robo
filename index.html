@@ -19,7 +19,9 @@
   #ear.on { background: #7fe0d6; box-shadow: 0 0 0 10px #7fe0d655; }
   #tray { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 12px; padding: 10px 16px; background: #fff9; border-radius: 44px; }
   @media (max-width: 600px) { #tray { right: auto; left: 50%; transform: translateX(-50%); bottom: auto; top: 16px; } }
-  .food { font-size: 54px; touch-action: none; }
+  .food { font-size: 54px; touch-action: none; display: inline-block; }
+  .food.want { animation: want .7s ease-in-out infinite; }  /* the food Robo asked for wiggles (hint) */
+  @keyframes want { 0%, 100% { transform: scale(1) rotate(0); } 25% { transform: scale(1.35) rotate(-12deg); } 75% { transform: scale(1.35) rotate(12deg); } }
   .drag { position: fixed; font-size: 80px; pointer-events: none; transform: translate(-50%, -50%); z-index: 9; }
   .z { position: fixed; font-size: 44px; pointer-events: none; animation: z 2.6s linear forwards; }
   @keyframes z { to { transform: translate(50px, -140px); opacity: 0; } }
@@ -38,14 +40,14 @@
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { S0, step, FACES, FOOD, pick } from './game.js';
+import { S0, step, FACES, FOOD, ASK, pick } from './game.js';
 
 const PH = Object.fromEntries((await (await fetch('phrases.json')).json()).map(p => [p.id, p]));
 const DEBUG = location.search.includes('debug');
 const $ = id => document.getElementById(id);
 
 // ---------- stats (parent area) ----------
-const stats = Object.assign({ minutes: 0, spoken: 0, words: {} }, JSON.parse(localStorage.getItem('robo') || '{}'));
+const stats = Object.assign({ minutes: 0, spoken: 0, words: {}, asked: {}, correct: {} }, JSON.parse(localStorage.getItem('robo') || '{}'));
 const save = () => localStorage.setItem('robo', JSON.stringify(stats));
 setInterval(() => { if (document.visibilityState === 'visible') { stats.minutes++; save(); } }, 60000);
 
@@ -270,14 +272,19 @@ const sfx = n => bufs['sfx:' + n] ? playBuf(bufs['sfx:' + n]) : 0;
 let faVoice = null;
 const findVoice = () => faVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith('fa')) || null;
 if (window.speechSynthesis) { findVoice(); speechSynthesis.onvoiceschanged = findVoice; }
-async function say(id) {
+async function say(id) {  // id or [ids] said one after another; resolves when done talking
+  if (Array.isArray(id)) { for (const one of id) await say(one); return; }
   const p = PH[id]; if (!p) return;
   stats.words[id] = (stats.words[id] || 0) + 1; save();
   if (bufs[id] === undefined) bufs[id] = await loadBuf(`audio/${id}.mp3`).catch(() => null);
-  if (bufs[id]) { talkUntil = performance.now() + playBuf(bufs[id]); return; }
-  // ponytail: no ElevenLabs file yet -> device Persian voice if it has one, otherwise just the mouth moves
-  if (faVoice) { const u = new SpeechSynthesisUtterance(p.fa); u.voice = faVoice; u.lang = faVoice.lang; speechSynthesis.speak(u); }
-  talkUntil = performance.now() + 350 * p.fa.split(/\s+/).length + 300;
+  let ms;
+  if (bufs[id]) ms = playBuf(bufs[id]);
+  else {  // ponytail: no ElevenLabs file -> device Persian voice if it has one, otherwise just the mouth moves
+    if (faVoice) { const u = new SpeechSynthesisUtterance(p.fa); u.voice = faVoice; u.lang = faVoice.lang; speechSynthesis.speak(u); }
+    ms = 350 * p.fa.split(/\s+/).length + 300;
+  }
+  talkUntil = performance.now() + ms;
+  await new Promise(r => setTimeout(r, ms + 150));
 }
 
 // tiny synth: fart, snore, dance beat
@@ -335,7 +342,21 @@ const FX = {
     snoreTimer = setInterval(() => { tone('sawtooth', 75, 60, 1.3, .12, 300, 6); zzz(); }, 3200);
   },
   day() { scene.background.copy(DAY); hemi.intensity = 2.2; sun.intensity = 2.2; clearInterval(snoreTimer); },
+  // Robo asking for things: voice first; after 8 s ask again + highlight the thing; give up quietly after 25 s
+  asked(a) { ask = { t0: performance.now(), hinted: false }; stats.asked[a.item] = (stats.asked[a.item] || 0) + 1; save(); },
+  correct(a) { ask = null; stats.correct[a.item] = (stats.correct[a.item] || 0) + 1; save(); nextAsk = performance.now() + 35000 + Math.random() * 15000; },
+  askDone() { ask = null; nextAsk = performance.now() + 35000 + Math.random() * 15000; },
 };
+let ask = null, nextAsk = Infinity;  // first ask: 15 s after the greeting (set in unlock)
+function stepAsk(now) {
+  const hint = !!(ask?.hinted && st.want);
+  for (const el of document.querySelectorAll('.food')) el.classList.toggle('want', hint && el.dataset.food === st.want);
+  ball.position.y = BALL_R + (hint && st.want === 'ball' && ballV.lengthSq() < .01 ? .06 * Math.abs(Math.sin(now / 180)) : 0);  // hop
+  if (st.want && ask) {
+    if (!ask.hinted && now - ask.t0 > 8000 && st.mode === 'idle') { ask.hinted = true; dispatch({ type: 'askHint' }); }
+    if (now - ask.t0 > 25000) dispatch({ type: 'askEnd' });
+  } else if (!st.want && st.mode === 'idle' && greeted && now > nextAsk) { nextAsk = Infinity; dispatch({ type: 'ask' }); }
+}
 
 // ---------- game loop glue ----------
 const st = S0();
@@ -344,7 +365,7 @@ function run(a) {
   const go = () => {
     if (a.clip) playClip(a.clip, a.loop);
     if (a.face) face = a.face;
-    if (a.fx) FX[a.fx]();
+    if (a.fx) FX[a.fx](a);
     const wait = a.sfx ? sfx(a.sfx) : 0;  // let the sound effect finish before talking
     if (a.say) setTimeout(() => say(a.say), Math.min(wait, 2500));
   };
@@ -361,7 +382,7 @@ function hitAt(x, y) {
 function unlock() {
   if (ac.state !== 'running') ac.resume();
   lastUser = performance.now();
-  if (!greeted && clips.Idle) { greeted = true; dispatch({ type: 'greet' }); }
+  if (!greeted && clips.Idle) { greeted = true; dispatch({ type: 'greet' }); nextAsk = performance.now() + 15000; }
 }
 r.domElement.addEventListener('pointerdown', e => {
   unlock(); down = { x: e.clientX, y: e.clientY };
@@ -394,7 +415,7 @@ function nearRobot(x, y) {
   return Math.hypot((p.x + 1) / 2 * innerWidth - x, (1 - p.y) / 2 * innerHeight - y) < Math.min(innerWidth, innerHeight) * .25;
 }
 for (const [food, f] of Object.entries(FOOD)) {
-  const el = Object.assign(document.createElement('span'), { className: 'food', textContent: f.emoji });
+  const el = Object.assign(document.createElement('span'), { className: 'food', textContent: f.emoji }); el.dataset.food = food;
   $('tray').append(el);
   el.addEventListener('pointerdown', e => {
     unlock(); e.preventDefault();
@@ -451,6 +472,9 @@ function openParent() {
   const notYet = Object.keys(PH).filter(id => !stats.words[id]).length;
   $('parent').innerHTML = `<h2>Robo — parents</h2>
     <p>Minutes played: <b>${stats.minutes}</b> · Robot repeats (mic): <b>${stats.spoken}</b> · Phrases not heard yet: <b>${notYet}</b> of ${Object.keys(PH).length}</p>
+    <h3>Robo asked for → got it right</h3>
+    <table>${Object.keys(ASK).map(k => `<tr><td>${FOOD[k]?.emoji || '⚽'} ${k}</td><td>asked ${stats.asked[k] || 0}×</td><td>right ${stats.correct[k] || 0}×</td></tr>`).join('')}</table>
+    <h3>Words heard</h3>
     <p><button id="close">Close</button><button id="reset">Reset stats</button></p>
     <table>${heard.map(([id, n]) => `<tr><td dir="rtl">${PH[id]?.fa}</td><td>${PH[id]?.en}</td><td>${n}×</td></tr>`).join('')}</table>`;
   $('parent').style.display = 'block';
@@ -466,7 +490,7 @@ const frame = () => {
   mixer.update(dt);
   // head follows the last touch while idle, drifting back to centre after a few seconds
   if (now - lastUser > 3000) look.set(0, 0);
-  stepBall(dt, now);
+  stepBall(dt, now); stepAsk(now);
   stepBubbles(dt, now); stepBlanket(now);
   cup.visible = cur?.getClip().name === 'Drink';
   if (bubbles.length && st.mode === 'idle') { const p = bubbles[0].position.clone().project(cam); look.set(p.x * .5, -p.y * .3); }  // watch the bubbles
@@ -491,7 +515,7 @@ const frame = () => {
   listen(now);
   if (st.mode === 'idle' && greeted) {  // no touches for 2 min -> bored.mp3; meanwhile a random silly every 30-60 s
     if (now - Math.max(lastUser, lastLonely) > 120000) { lastLonely = now; dispatch({ type: 'lonely' }); }
-    else if (now - Math.max(lastUser, lastSilly) > boredAfter) { lastSilly = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
+    else if (!st.want && now - Math.max(lastUser, lastSilly) > boredAfter) { lastSilly = now; boredAfter = 30000 + Math.random() * 30000; dispatch({ type: 'bored' }); }
   }
   r.render(scene, cam);
 };

@@ -3,7 +3,7 @@
 <pre id="out" style="font:14px monospace"></pre>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
-import { S0, step, SAYS, REACT, FOOD, FALLS, DANCES, SILLY, FACES } from './game.js';
+import { S0, step, SAYS, REACT, FOOD, FALLS, DANCES, SILLY, FACES, ASK } from './game.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const lines = []; let fails = 0;
 const ok = (c, m) => { lines.push((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
@@ -12,7 +12,7 @@ const ok = (c, m) => { lines.push((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++;
 const ph = await (await fetch('phrases.json')).json(), ids = new Set(ph.map(p => p.id));
 ok(ids.size === ph.length, `phrase ids unique (${ph.length})`);
 ok(ph.every(p => p.id && p.fa && p.en && p.cat), 'every phrase has id/fa/en/cat');
-const refs = [...Object.values(SAYS).flat(), ...Object.values(REACT).flatMap(r => r.say || []), ...Object.values(FOOD).flatMap(f => f.say),
+const refs = [...Object.values(ASK).flat(), ...Object.values(SAYS).flat(), ...Object.values(REACT).flatMap(r => r.say || []), ...Object.values(FOOD).flatMap(f => f.say),
   ...DANCES.map(d => d[1]).filter(Boolean), ...SILLY.flatMap(s => s.say)];
 const missing = refs.filter(r => !ids.has(r)); ok(!missing.length, 'every reaction says a known phrase ' + missing);
 
@@ -38,6 +38,21 @@ for (const zone of Object.keys(REACT)) { const s = S0(); const a = step(s, { typ
   ok(step(s, { type: 'speaker' }) === null && step(s, { type: 'bored' }) === null && s.mode === 'hide', 'other toys ignored while hiding');
   const b = step(s, { type: 'peek' }); ok(b?.sfx === 'peek' && b.fx === 'blanketOff' && settle(s) === 'idle', 'blanket tap again -> peek.mp3, blanket off -> idle'); }
 { const s = S0(); step(s, { type: 'peek' }); const b = step(s, { type: 'tap', zone: 'belly' }); ok(b?.sfx === 'peek' && settle(s) === 'idle', 'tapping hidden Robo also = peekaboo'); }
+// Robo asks for things
+const askFor = item => { const s = S0(); let a; for (let i = 0; i < 200 && s.want !== item; i++) { Object.assign(s, S0()); a = step(s, { type: 'ask' }); } settle(s); return [s, a]; };
+{ const [s, a] = askFor('apple');
+  ok(a.clip === 'Wave' && a.fx === 'asked' && a.item === 'apple' && a.say.includes('sib_mikham') && !a.sfx && s.mode === 'idle' && s.want === 'apple', 'ask: Robo waves and says «سیب می‌خوام!», then waits');
+  ok(step(s, { type: 'ask' }) === null, 'never asks twice at once');
+  ok(step(s, { type: 'askHint' })?.say.includes('sib_mikham'), 'no answer: asks again');
+  const eat = step(s, { type: 'feed', food: 'apple' }, 0), yay = step(s, { type: 'clipDone' });
+  ok(eat.clip === 'Eat' && yay?.clip === 'DanceJump' && yay.fx === 'correct' && yay.item === 'apple' && /afarin|mamnoon/.test(yay.say) && s.want === null && settle(s) === 'idle', 'right food: eats, then celebrates «آفرین!»'); }
+{ const [s] = askFor('milk'); const d = step(s, { type: 'feed', food: 'milk' }, 0); ok(d.clip === 'Drink' && step(s, { type: 'clipDone' })?.fx === 'correct', 'right drink: drinks, then celebrates'); }
+{ const [s] = askFor('banana'); step(s, { type: 'feed', food: 'bread' }, 0); const again = step(s, { type: 'clipDone' });
+  ok(again?.say?.includes('moz_mikham') && again.fx !== 'correct' && s.want === 'banana' && settle(s) === 'idle', 'other food: eats it anyway, asks for the banana again (no punishment)'); }
+{ const [s, a] = askFor('ball'); ok(a.say.join() === 'toop,bede_be_man', 'ball: «توپ!» then «بده به من!»');
+  step(s, { type: 'ball' }); const yay = step(s, { type: 'clipDone' }); ok(yay?.fx === 'correct' && yay.item === 'ball' && s.want === null, 'ball brought: kick, then celebrate'); }
+{ const [s] = askFor('water'); ok(step(s, { type: 'askEnd' })?.fx === 'askDone' && s.want === null, 'no answer for a while: request dropped quietly'); }
+{ const s = S0(); step(s, { type: 'speaker' }); ok(step(s, { type: 'ask' }) === null, 'no asking while dancing'); }
 { const s = S0(); ok(step(s, { type: 'tap', zone: 'nope' }) === null && s.mode === 'idle', 'unknown tap zone is ignored, Robo not stuck'); }
 { const s = S0(); step(s, { type: 'tap', zone: 'head' }, 0); step(s, { type: 'tap', zone: 'head' }, 5000); ok(s.mode === 'react' && settle(s) === 'idle', 'slow taps do not fall'); }
 { const s = S0(); step(s, { type: 'bed' }); ok(s.mode === 'sleep', 'bed -> sleep'); ok(step(s, { type: 'tap', zone: 'belly' })?.fx === 'day' && settle(s) === 'idle', 'tap wakes -> idle'); }

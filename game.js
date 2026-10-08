@@ -35,6 +35,15 @@ export const FOOD = {
   bread: { emoji: '🍞', say: ['nan', 'nan_mikham', 'khoshmaze', 'nosh_jan'] },
 };
 
+// what Robo asks for (learning: the child hears the word and brings the thing) -> phrases, said in order
+export const ASK = {
+  apple: ['sib_mikham'], banana: ['moz_mikham'], bread: ['nan_mikham'], milk: ['shir_mikham'], water: ['ab_mikham'],
+  ball: ['toop', 'bede_be_man'],
+};
+const PRAISE = ['afarin', 'afarin_kheili_khoob', 'mamnoon'];
+const got = (s, item) => {  // the child brought what Robo asked for: celebrate after the eat/kick
+  s.want = null; return { clip: 'DanceJump', face: 'star', say: pick(PRAISE), fx: 'correct', item };
+};
 export const FALLS = [['Fall', 'GetUp'], ['FallBack', 'GetUpBack'], ['FallFront', 'GetUpFront'], ['FallApart', 'Reassemble']];
 export const DANCES = [  // [clip, phrase, voice line]
   ['DanceWiggle', 'beraghs'], ['DanceSpin', 'becharkh'], ['DanceJump', null, 'jump'], ['DanceJump', 'dast_bezan']];
@@ -47,7 +56,7 @@ export const SILLY = [  // random thing to do when nobody has touched Robo for a
 
 const IDLE = { clip: 'Idle', loop: true, face: 'normal' };
 const once = r => ({ ...r, say: r.say && pick(r.say) });
-export const S0 = () => ({ mode: 'idle', next: [], taps: [], fed: [] });
+export const S0 = () => ({ mode: 'idle', next: [], taps: [], fed: [], want: null });
 
 export function step(s, ev, now = Date.now()) {
   const free = s.mode === 'idle' || s.mode === 'react';
@@ -70,7 +79,9 @@ export function step(s, ev, now = Date.now()) {
     case 'feed': {
       if (!free) return null;
       s.fed = s.fed.filter(t => now - t < 60000).concat(now); s.mode = 'react'; s.next = [];
-      if (s.fed.length >= 3) { s.fed = []; s.next = [{ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }]; }
+      if (s.want === ev.food) s.next.push(got(s, ev.food));
+      else if (s.want) s.next.push({ clip: 'Wave', face: 'happy', say: ASK[s.want] });  // not what he asked for: eat it anyway, ask again
+      if (s.fed.length >= 3) { s.fed = []; s.next.push({ clip: 'Fart', face: 'joy', fx: 'fart', say: pick(SAYS.full) }); }
       const drink = ev.food === 'milk' || ev.food === 'water';  // drinks: cup to the mouth; fx picks the cup
       return { clip: drink ? 'Drink' : 'Eat', face: 'heart', sfx: 'feed', fx: drink ? ev.food : undefined };  // FOOD[].say: tray tap
     }
@@ -97,7 +108,18 @@ export function step(s, ev, now = Date.now()) {
     }
     case 'ball':  // the ball rolled into Robo: hop and kick it back
       if (s.mode !== 'idle') return null;
-      s.mode = 'react'; return { clip: 'FootPoke', face: 'joy', sfx: 'ball', fx: 'kickBall' };
+      s.mode = 'react'; s.next = s.want === 'ball' ? [got(s, 'ball')] : [];
+      return { clip: 'FootPoke', face: 'joy', sfx: 'ball', fx: 'kickBall' };
+    case 'ask':  // Robo asks for something (voice only first: listening practice)
+      if (s.mode !== 'idle' || s.want) return null;
+      s.want = pick(Object.keys(ASK)); s.mode = 'react';
+      return { clip: 'Wave', face: 'happy', say: ASK[s.want], fx: 'asked', item: s.want };
+    case 'askHint':  // no answer yet: ask again (the app also highlights the thing)
+      if (s.mode !== 'idle' || !s.want) return null;
+      return { face: 'happy', say: ASK[s.want] };
+    case 'askEnd':  // nobody answered: drop it quietly
+      if (!s.want) return null;
+      s.want = null; return { fx: 'askDone' };
     case 'bubbles':  // tap the bubble bottle: excited hop while bubbles float up (the child pops them)
       if (s.mode !== 'idle') return null;
       s.mode = 'react'; return { clip: 'FootPoke', face: 'star', sfx: 'bubbles', fx: 'bubbles' };
